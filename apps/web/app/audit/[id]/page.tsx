@@ -20,6 +20,12 @@ interface AuditDetail {
   error_message: string | null;
 }
 
+const SEVERITY_TONE: Record<Objection["severity"], string> = {
+  high: "text-error",
+  medium: "text-amber-700",
+  low: "text-neutral-600",
+};
+
 export default function AuditDetailPage() {
   const params = useParams<{ id: string }>();
   const [row, setRow] = useState<AuditDetail | null>(null);
@@ -35,26 +41,36 @@ export default function AuditDetailPage() {
     return () => { alive = false; clearInterval(t); };
   }, [params.id]);
 
-  if (!row) return <p className="text-slate-400">Loading…</p>;
+  if (!row) return <p className="text-neutral-600">Loading…</p>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8">
+      <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{row.deal_id}</h1>
-          <p className="text-sm text-slate-500">
-            {row.outcome.toUpperCase()} · checkpoint <span className="font-mono">{row.pipeline_checkpoint}</span>
-            {row.classification && ` · ${row.classification}`}
+          <p className="font-mono text-[11px] uppercase tracking-wider">
+            <span className={row.outcome === "won" ? "text-success" : "text-error"}>
+              ● {row.outcome.toUpperCase()}
+            </span>{" "}
+            <span className="text-neutral-500">· checkpoint {row.pipeline_checkpoint}</span>
+            {row.classification && <span className="text-neutral-500"> · {row.classification}</span>}
           </p>
+          <h1 className="mt-1 font-serif text-3xl text-navy">{row.deal_id}</h1>
         </div>
         {row.digest_pdf_url && (
-          <a href={row.digest_pdf_url} target="_blank" rel="noreferrer" className="text-brand-accent">PDF →</a>
+          <a
+            href={row.digest_pdf_url}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-cta rounded-2xl h-11 px-6 inline-flex items-center font-semibold text-sm tracking-ui transition"
+          >
+            Download PDF
+          </a>
         )}
-      </div>
+      </header>
 
       {row.error_message && (
-        <Card className="border-brand-danger">
-          <CardTitle className="text-brand-danger">Pipeline error</CardTitle>
+        <Card variant="white" className="border-l-4 border-l-error">
+          <CardTitle className="text-error">Pipeline error</CardTitle>
           <CardDescription className="mt-2">{row.error_message}</CardDescription>
         </Card>
       )}
@@ -62,15 +78,18 @@ export default function AuditDetailPage() {
       <Section title="Objections" empty={!row.objections?.length}>
         {row.objections?.map((o, i) => (
           <li key={i} className="text-sm">
-            <span className="text-brand-warn">[{o.severity.toUpperCase()}]</span> {o.objection}{" "}
-            <span className="text-xs text-slate-500">— {o.raised_by}</span>
+            <span className={`font-mono text-[10px] uppercase tracking-wider mr-2 ${SEVERITY_TONE[o.severity]}`}>
+              [{o.severity}]
+            </span>
+            <span className="text-navy">{o.objection}</span>{" "}
+            <span className="text-xs text-neutral-500">— {o.raised_by}</span>
           </li>
         ))}
       </Section>
 
       <Section title="JTBD patterns" empty={!row.jtbd_patterns}>
         {row.jtbd_patterns && (
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-2 gap-5 text-sm">
             <QuadrantList label="Push" items={row.jtbd_patterns.push} />
             <QuadrantList label="Pull" items={row.jtbd_patterns.pull} />
             <QuadrantList label="Anxiety" items={row.jtbd_patterns.anxiety} />
@@ -81,20 +100,23 @@ export default function AuditDetailPage() {
 
       <Section title="Classification evidence" empty={!row.classification_evidence?.length}>
         {row.classification_evidence?.map((e, i) => (
-          <li key={i} className="text-sm"><b>{e.claim}</b> — <span className="italic text-slate-300">"{e.quote_or_pattern}"</span></li>
-        ))}
-      </Section>
-
-      <Section title="Buyer language" empty={!row.buyer_language?.length}>
-        {row.buyer_language?.map((p, i) => (
-          <li key={i} className="text-sm">
-            <span className="italic">"{p.phrase}"</span>
-            <span className="text-xs text-slate-500"> → {p.use_case} · {p.context}</span>
+          <li key={i} className="text-sm text-navy">
+            <b className="text-navy">{e.claim}</b>{" "}
+            — <span className="italic text-neutral-700">"{e.quote_or_pattern}"</span>
           </li>
         ))}
       </Section>
 
-      <p className="text-xs font-mono text-slate-600 break-all">
+      <Section title="Buyer language (verbatim)" empty={!row.buyer_language?.length}>
+        {row.buyer_language?.map((p, i) => (
+          <li key={i} className="text-sm">
+            <span className="italic text-navy">"{p.phrase}"</span>
+            <span className="text-xs text-neutral-500"> → {p.use_case} · {p.context}</span>
+          </li>
+        ))}
+      </Section>
+
+      <p className="text-xs font-mono text-neutral-500 break-all">
         featherless_model_versions: {JSON.stringify(row.featherless_model_versions)}
       </p>
     </div>
@@ -105,8 +127,10 @@ function Section({ title, empty, children }: { title: string; empty: boolean; ch
   return (
     <Card>
       <CardTitle>{title}</CardTitle>
-      <div className="mt-3">
-        {empty ? <CardDescription>Pending…</CardDescription> : <ul className="space-y-1.5 list-disc list-inside text-slate-200">{children}</ul>}
+      <div className="mt-4">
+        {empty ? <CardDescription>Pending…</CardDescription> : (
+          <ul className="space-y-2 list-disc list-inside text-navy">{children}</ul>
+        )}
       </div>
     </Card>
   );
@@ -115,9 +139,9 @@ function Section({ title, empty, children }: { title: string; empty: boolean; ch
 function QuadrantList({ label, items }: { label: string; items: string[] }) {
   return (
     <div>
-      <p className="text-xs uppercase text-slate-500">{label}</p>
-      <ul className="mt-1 list-disc list-inside">
-        {items.length === 0 && <li className="text-slate-500">—</li>}
+      <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">{label}</p>
+      <ul className="mt-2 list-disc list-inside text-navy space-y-1">
+        {items.length === 0 && <li className="text-neutral-500">—</li>}
         {items.map((it, i) => <li key={i}>{it}</li>)}
       </ul>
     </div>

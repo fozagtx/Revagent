@@ -1,11 +1,12 @@
 "use client";
 import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { DEMO_FOUNDER_ID } from "@/lib/utils";
 
+type Status = "idle" | "uploading" | "processing" | "ready" | "error";
+
 export default function PitchPage() {
-  const [status, setStatus] = useState<"idle" | "uploading" | "processing" | "ready" | "error">("idle");
+  const [status, setStatus] = useState<Status>("idle");
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -48,23 +49,26 @@ export default function PitchPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Pitch Surgeon</h1>
-        <p className="text-slate-400 mt-2">
-          Drop a .pptx or .pdf deck. Get 3 scores, a weakest-slide rewrite in 3 archetypes, and a 30-sec narrated pitch.
+    <div className="space-y-8">
+      <header>
+        <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">Gemini · multimodal</p>
+        <h1 className="mt-1 font-serif text-4xl text-navy">Pitch Surgeon</h1>
+        <p className="mt-3 text-neutral-700 max-w-2xl leading-relaxed">
+          Drop a .pptx or .pdf deck. A 3-persona council scores Frame, Offer, and Desire — and rewrites the
+          weakest slide in three archetypes with a 30-second narrated pitch.
         </p>
-      </div>
+      </header>
 
       <Card
+        variant="hero"
         onDrop={(e) => {
           e.preventDefault();
           const f = e.dataTransfer.files[0];
           if (f) void handleUpload(f);
         }}
         onDragOver={(e) => e.preventDefault()}
-        className="border-dashed cursor-pointer hover:border-brand-accent"
         onClick={() => fileRef.current?.click()}
+        className="cursor-pointer p-10 text-center bg-sky"
       >
         <input
           ref={fileRef}
@@ -73,18 +77,34 @@ export default function PitchPage() {
           className="hidden"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleUpload(f); }}
         />
-        <CardTitle>Drop a pitch deck</CardTitle>
+        <CardTitle className="font-serif text-2xl">Drop a pitch deck</CardTitle>
         <CardDescription className="mt-2">.pptx or .pdf · ≤25MB · single deck per upload</CardDescription>
-        <p className="mt-4 text-xs text-slate-500">Status: {status}{error && ` — ${error}`}</p>
+        <StatusPill status={status} error={error} className="mt-5" />
       </Card>
 
       {analysisId && status === "ready" && (
-        <a className="text-brand-accent" href={`/pitch/${analysisId}`}>Open analysis →</a>
+        <a className="font-semibold text-blue-700 hover:text-blue-900" href={`/pitch/${analysisId}`}>
+          Open analysis →
+        </a>
       )}
 
       {analysisId && (
-        <p className="text-xs font-mono text-slate-500">analysis_id: {analysisId}</p>
+        <p className="text-xs font-mono text-neutral-500">analysis_id: {analysisId}</p>
       )}
+    </div>
+  );
+}
+
+function StatusPill({ status, error, className }: { status: Status; error: string | null; className?: string }) {
+  const tone =
+    status === "ready" ? "bg-success/15 text-success"
+    : status === "error" ? "bg-error/15 text-error"
+    : status === "idle" ? "bg-white text-neutral-600"
+    : "bg-blue-100 text-blue-700";
+  return (
+    <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold tracking-ui ${tone} ${className ?? ""}`}>
+      <span className="w-1.5 h-1.5 rounded-full bg-current" />
+      {status}{error && ` — ${error}`}
     </div>
   );
 }

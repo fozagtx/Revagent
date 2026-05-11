@@ -43,42 +43,45 @@ export default function PitchAnalysisPage() {
     return () => { alive = false; clearInterval(t); };
   }, [params.id]);
 
-  if (!row) return <p className="text-slate-400">Loading…</p>;
+  if (!row) return <p className="text-neutral-600">Loading…</p>;
 
   const rewrites = row.rewrites?.[tab] ?? [];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{row.deck_filename}</h1>
-        <p className="text-sm text-slate-500">
-          {row.num_slides ?? "?"} slides · status: {row.status}
-        </p>
-      </div>
+    <div className="space-y-8">
+      <header>
+        <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">{row.num_slides ?? "?"} slides · {row.status}</p>
+        <h1 className="mt-1 font-serif text-3xl text-navy">{row.deck_filename}</h1>
+      </header>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-5">
         <ScoreCard label="Frame · Klaff" score={row.frame_score} />
         <ScoreCard label="Offer · Hormozi" score={row.offer_score} />
         <ScoreCard label="Desire · Schwartz" score={row.desire_score} />
       </div>
 
       {row.weakest_slide_idx !== null && (
-        <Card>
-          <CardTitle>Weakest slide: #{row.weakest_slide_idx + 1}</CardTitle>
-          <CardDescription className="mt-2">
+        <Card variant="white" className="border-l-4 border-l-blue-700">
+          <CardTitle>
+            <span className="font-mono text-xs uppercase tracking-wider text-blue-700">Weakest slide</span>
+            <span className="block mt-1">Slide #{row.weakest_slide_idx + 1}</span>
+          </CardTitle>
+          <CardDescription className="mt-2 text-neutral-700">
             {row.slide_critiques[row.weakest_slide_idx]?.notes ?? "—"}
           </CardDescription>
         </Card>
       )}
 
       <div>
-        <div className="flex gap-2 mb-3">
+        <div className="flex gap-2 mb-4">
           {(["frame_control", "grand_slam", "desire_amp"] as Archetype[]).map((a) => (
             <button
               key={a}
               onClick={() => setTab(a)}
-              className={`px-3 py-1.5 rounded-md text-sm ${
-                tab === a ? "bg-brand-accent text-brand-ink" : "bg-slate-800 text-slate-300"
+              className={`rounded-full px-4 py-2 text-sm tracking-ui font-semibold transition ${
+                tab === a
+                  ? "bg-blue-150 text-navy border border-blue-200"
+                  : "bg-neutral-50 text-navy border border-neutral-200 hover:bg-blue-100"
               }`}
             >
               {labelFor(a)}{row.strongest_archetype === a && " ★"}
@@ -86,21 +89,21 @@ export default function PitchAnalysisPage() {
           ))}
         </div>
         <div className="space-y-3">
-          {rewrites.length === 0 && <p className="text-slate-500 text-sm">Rewrites still processing…</p>}
+          {rewrites.length === 0 && <p className="text-neutral-600 text-sm">Rewrites still processing…</p>}
           {rewrites.map((r, i) => (
             <Card key={i}>
               <CardTitle>Slide {r.slide_idx + 1}</CardTitle>
               <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-xs text-slate-500 mb-1">Original</p>
-                  <p className="text-slate-300">{r.original_text}</p>
+                  <p className="text-xs font-mono uppercase tracking-wider text-neutral-500 mb-1">Original</p>
+                  <p className="text-neutral-700">{r.original_text}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-brand-accent mb-1">Rewritten</p>
-                  <p className="text-slate-100">{r.rewritten_text}</p>
+                  <p className="text-xs font-mono uppercase tracking-wider text-blue-700 mb-1">Rewritten</p>
+                  <p className="text-navy font-medium">{r.rewritten_text}</p>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-slate-500">{r.rationale}</p>
+              <p className="mt-3 text-xs text-neutral-600 italic">{r.rationale}</p>
             </Card>
           ))}
         </div>
@@ -113,7 +116,7 @@ export default function PitchAnalysisPage() {
         </Card>
       )}
 
-      <p className="text-xs font-mono text-slate-600">
+      <p className="text-xs font-mono text-neutral-500">
         gemini_request_id: {row.gemini_request_id ?? "—"}
       </p>
     </div>
@@ -123,9 +126,9 @@ export default function PitchAnalysisPage() {
 function ScoreCard({ label, score }: { label: string; score: number | null }) {
   return (
     <Card>
-      <CardDescription>{label}</CardDescription>
-      <p className="mt-2 text-4xl font-bold tabular-nums">
-        {score ?? "—"}<span className="text-base text-slate-500">/10</span>
+      <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">{label}</p>
+      <p className="mt-3 font-serif text-5xl text-navy tabular-nums leading-none">
+        {score ?? "—"}<span className="text-2xl text-neutral-500">/10</span>
       </p>
     </Card>
   );

@@ -14,6 +14,13 @@ interface FinalSummary { switch_chart: SwitchChart; follow_ups: string[]; speech
 
 const EMPTY_CHART: SwitchChart = { push: [], pull: [], anxiety: [], habit: [] };
 
+const QUADRANT_META: Record<Quadrant, { title: string; sub: string; dot: string }> = {
+  push:    { title: "Push",    sub: "what's broken today",   dot: "bg-red-500" },
+  pull:    { title: "Pull",    sub: "desired outcome",       dot: "bg-success" },
+  anxiety: { title: "Anxiety", sub: "fear of switching",     dot: "bg-amber-700" },
+  habit:   { title: "Habit",   sub: "status quo inertia",    dot: "bg-blue-500" },
+};
+
 export default function LiveCall() {
   const params = useParams<{ id: string }>();
   const [chart, setChart] = useState<SwitchChart>(EMPTY_CHART);
@@ -101,26 +108,29 @@ export default function LiveCall() {
   if (final) return <CallSummary summary={final} callId={params.id} />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-7">
+      <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Live call</h1>
-          <p className="text-sm text-slate-500">
-            session: <span className="font-mono">{sessionId ?? "—"}</span> ·{" "}
-            <span className={connected ? "text-brand-ok" : "text-slate-500"}>{connected ? "connected" : "connecting…"}</span>
+          <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">
+            {connected ? "● connected" : "○ connecting…"} · session {sessionId ?? "—"}
           </p>
+          <h1 className="mt-1 font-serif text-3xl text-navy">Live call</h1>
         </div>
         <Button variant="danger" onClick={endCall}>End call</Button>
-      </div>
+      </header>
 
       <SwitchChartGrid chart={chart} />
 
       {nudges.length > 0 && (
         <div className="space-y-2">
           {nudges.slice(-3).map((n) => (
-            <Card key={n.id} className="border-brand-warn">
-              <CardTitle className="text-brand-warn">Nudge · {n.quadrant.toUpperCase()}</CardTitle>
-              <CardDescription className="mt-2 text-slate-200">"{n.suggested_question}"</CardDescription>
+            <Card key={n.id} variant="white" className="border-l-4 border-l-amber-700">
+              <p className="font-mono text-[11px] uppercase tracking-wider text-amber-700">
+                Nudge · {QUADRANT_META[n.quadrant].title.toLowerCase()}
+              </p>
+              <CardDescription className="mt-2 text-navy font-medium">
+                "{n.suggested_question}"
+              </CardDescription>
             </Card>
           ))}
         </div>
@@ -130,9 +140,11 @@ export default function LiveCall() {
         <CardTitle>Transcript</CardTitle>
         <div className="mt-3 max-h-72 overflow-y-auto space-y-1 font-mono text-sm">
           {transcript.map((u, i) => (
-            <p key={i}><span className="text-slate-500">[{u.speaker}]</span> {u.text}</p>
+            <p key={i} className="text-navy">
+              <span className="text-neutral-500">[{u.speaker}]</span> {u.text}
+            </p>
           ))}
-          {partial && <p className="text-slate-500 italic">… {partial}</p>}
+          {partial && <p className="text-neutral-500 italic">… {partial}</p>}
         </div>
       </Card>
     </div>
@@ -141,25 +153,29 @@ export default function LiveCall() {
 
 function SwitchChartGrid({ chart }: { chart: SwitchChart }) {
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <Quadrant title="Push (what's broken today)" color="text-rose-400" evidence={chart.push} />
-      <Quadrant title="Pull (desired outcome)" color="text-emerald-400" evidence={chart.pull} />
-      <Quadrant title="Anxiety (fear of switching)" color="text-amber-400" evidence={chart.anxiety} />
-      <Quadrant title="Habit (status quo inertia)" color="text-sky-400" evidence={chart.habit} />
+    <div className="grid grid-cols-2 gap-4">
+      {(Object.keys(QUADRANT_META) as Quadrant[]).map((q) => (
+        <QuadrantCard key={q} q={q} evidence={chart[q]} />
+      ))}
     </div>
   );
 }
 
-function Quadrant({ title, color, evidence }: { title: string; color: string; evidence: SwitchEvidence[] }) {
+function QuadrantCard({ q, evidence }: { q: Quadrant; evidence: SwitchEvidence[] }) {
+  const m = QUADRANT_META[q];
   return (
     <Card>
-      <CardTitle className={color}>{title}</CardTitle>
-      <div className="mt-3 space-y-2">
-        {evidence.length === 0 && <p className="text-xs text-slate-500">Listening…</p>}
+      <div className="flex items-center gap-2">
+        <span className={`w-2 h-2 rounded-full ${m.dot}`} />
+        <h3 className="font-semibold tracking-ui text-navy text-lg">{m.title}</h3>
+        <span className="text-xs text-neutral-500">{m.sub}</span>
+      </div>
+      <div className="mt-3 space-y-2.5">
+        {evidence.length === 0 && <p className="text-xs text-neutral-500">Listening…</p>}
         {evidence.map((e, i) => (
           <div key={i} className="text-sm">
-            <p className="text-slate-200">"{e.quote}"</p>
-            <p className="text-xs text-slate-500">@ {e.ts.toFixed(1)}s · conf {Math.round(e.confidence * 100)}%</p>
+            <p className="text-navy">"{e.quote}"</p>
+            <p className="text-xs text-neutral-500">@ {e.ts.toFixed(1)}s · conf {Math.round(e.confidence * 100)}%</p>
           </div>
         ))}
       </div>
@@ -169,16 +185,19 @@ function Quadrant({ title, color, evidence }: { title: string; color: string; ev
 
 function CallSummary({ summary, callId }: { summary: FinalSummary; callId: string }) {
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Call complete</h1>
+    <div className="space-y-8">
+      <header>
+        <p className="font-mono text-[11px] uppercase tracking-wider text-success">● complete</p>
+        <h1 className="mt-1 font-serif text-3xl text-navy">Call complete</h1>
+      </header>
       <SwitchChartGrid chart={summary.switch_chart} />
       <Card>
         <CardTitle>3 follow-up questions</CardTitle>
-        <ol className="mt-3 space-y-2 list-decimal list-inside text-slate-200">
+        <ol className="mt-4 space-y-2 list-decimal list-inside text-navy">
           {summary.follow_ups.map((q, i) => <li key={i}>{q}</li>)}
         </ol>
       </Card>
-      <p className="text-xs font-mono text-slate-600">
+      <p className="text-xs font-mono text-neutral-500">
         speechmatics_session_id: {summary.speechmatics_session_id ?? "—"} · call_id: {callId}
       </p>
     </div>
