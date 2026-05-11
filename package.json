@@ -1,0 +1,25 @@
+{
+  "name": "revagent",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,green \"bun run --cwd apps/web dev\" \"bun run --cwd apps/api dev\"",
+    "build": "bun run --cwd apps/web build && bun run --cwd apps/api build",
+    "typecheck": "tsc -b apps/web apps/api packages/db packages/shared --noEmit",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "db:generate": "bun run --cwd packages/db drizzle-kit generate",
+    "db:migrate": "bun run --cwd packages/db drizzle-kit migrate",
+    "db:push": "bun run --cwd packages/db drizzle-kit push"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.5.0"
+  },
+  "packageManager": "bun@1.1.34"
+}

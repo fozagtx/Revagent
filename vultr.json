@@ -1,0 +1,42 @@
+{
+  "name": "revagent",
+  "description": "RevAgent — sales intelligence for early-stage founders",
+  "provider": "vultr",
+  "region": "fra",
+  "plan": "vc2-2c-4gb",
+  "os": "ubuntu-22-04-x64",
+  "deploy": {
+    "method": "coolify",
+    "coolify": {
+      "build": "docker",
+      "dockerfile": "./Dockerfile",
+      "expose_ports": [3000, 4000],
+      "healthcheck": "/api/health"
+    }
+  },
+  "services": [
+    {
+      "name": "postgres",
+      "type": "vultr_managed_database",
+      "engine": "pg",
+      "version": "16",
+      "plan": "vultr-dbaas-startup-cc-1-55-2"
+    },
+    {
+      "name": "object-storage",
+      "type": "vultr_object_storage",
+      "region": "ewr1",
+      "bucket": "revagent"
+    }
+  ],
+  "env_required": [
+    "DATABASE_URL",
+    "GEMINI_API_KEY",
+    "SPEECHMATICS_API_KEY",
+    "FEATHERLESS_API_KEY",
+    "VULTR_S3_ENDPOINT",
+    "VULTR_S3_ACCESS_KEY",
+    "VULTR_S3_SECRET_KEY",
+    "RESEND_API_KEY"
+  ]
+}
