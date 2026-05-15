@@ -1,58 +1,136 @@
 import Link from "next/link";
-import { Presentation, Mic, FileSearch, ArrowRight } from "lucide-react";
+import {
+  Presentation,
+  Mic,
+  FileSearch,
+  ArrowRight,
+  CheckCircle2,
+  XCircle,
+  Sparkles,
+  Zap,
+  Lock,
+} from "lucide-react";
 import { Card, CardEyebrow } from "@/components/ui/card";
 
 export default function Home() {
   return (
     <>
-      {/* Hero — full-bleed band */}
+      {/* HERO */}
       <section className="hero-band">
-        <div className="container-page pt-28 pb-12 sm:pt-32 sm:pb-16 md:pt-36 md:pb-24 rise-in">
-          <p className="font-serif text-sm italic text-blue-700 mb-3">
-            The Founder Economy
-          </p>
-          <h1 className="font-serif text-[34px] sm:text-[44px] md:text-6xl leading-[1.05] text-navy tracking-tight max-w-3xl break-words">
-            Sales intelligence,
-            <span className="block text-blue-700">floating in the cloud.</span>
+        <div className="container-page pt-28 pb-12 sm:pt-32 sm:pb-16 md:pt-36 md:pb-20 rise-in">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-700/20 bg-white/70 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-blue-700 backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-success" /> Live · 3 AI agents
+          </span>
+          <h1 className="mt-4 font-serif text-[36px] sm:text-[48px] md:text-[64px] leading-[1.02] text-navy tracking-tight max-w-4xl break-words">
+            Win more deals.
+            <span className="block text-blue-700">Stop guessing why you lost.</span>
           </h1>
-          <p className="mt-5 max-w-2xl text-[15px] md:text-base leading-relaxed text-neutral-700">
-            Three coordinated AI agents that fix the three most-broken parts of an
-            early-stage founder&apos;s customer-facing motion: pitch decks, live
-            discovery calls, and post-deal pattern extraction.
+          <p className="mt-5 max-w-2xl text-[16px] md:text-[17px] leading-relaxed text-neutral-700">
+            RevAgent is three AI agents that fix the parts of selling that
+            kill early-stage founders: weak pitch decks, rambling discovery
+            calls, and lost deals you never debrief. Drop in a deck or a
+            transcript — get back specifics you can ship today.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-7 flex flex-wrap items-center gap-3">
             <Link
-              href="/pitch"
-              className="btn-cta inline-flex h-12 items-center gap-2 rounded-2xl px-6 text-sm font-semibold tracking-ui transition duration-charms ease-charms"
+              href="/login?next=/pitch"
+              className="btn-cta inline-flex h-12 items-center gap-2 rounded-2xl px-6 text-[15px] font-semibold tracking-ui transition duration-charms ease-charms"
             >
-              Try a deck
+              Start free — no card
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link
-              href="/call"
-              className="inline-flex h-12 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-6 text-sm font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
+              href="#how-it-works"
+              className="inline-flex h-12 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-6 text-[15px] font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
             >
-              Start a call
+              See how it works
             </Link>
           </div>
+          <ul className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-neutral-600">
+            <li className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" /> 60-second analysis
+            </li>
+            <li className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" /> No CRM setup
+            </li>
+            <li className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" /> Open-source · MIT
+            </li>
+          </ul>
         </div>
       </section>
 
-      <div className="container-page py-12 md:py-16 space-y-16 md:space-y-20">
-        {/* Three agents */}
-        <section>
-          <div className="mb-6 rise-in stagger-1">
-            <h2 className="font-serif text-2xl text-navy md:text-3xl">
-              Three agents
+      <div className="container-page py-14 md:py-20 space-y-20 md:space-y-28">
+        {/* TRUST BAR */}
+        <section className="rise-in">
+          <p className="text-center font-mono text-[11px] uppercase tracking-wider text-neutral-500">
+            Built on the same stack as the agents winning AI Olympics 2026
+          </p>
+          <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <BrandChip label="Gemini" logo={<GeminiMark />} />
+            <BrandChip label="Speechmatics" logo={<SpeechmaticsMark />} />
+            <BrandChip label="Featherless" logo={<FeatherlessMark />} />
+            <BrandChip label="Vultr" logo={<VultrMark />} />
+          </div>
+        </section>
+
+        {/* PROBLEM */}
+        <section className="rise-in stagger-1">
+          <div className="mb-8 md:mb-10 max-w-2xl">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">
+              The problem
+            </p>
+            <h2 className="mt-2 font-serif text-3xl md:text-4xl text-navy leading-tight">
+              You&apos;re leaking deals at three obvious points.
             </h2>
+            <p className="mt-3 text-[15px] text-neutral-700 leading-relaxed">
+              Founders lose six-figure deals not because the product is wrong —
+              but because nobody told them their deck buries the offer, their
+              discovery calls miss the buyer&apos;s real job, and their losses
+              never get debriefed. Three preventable failures, one fix.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <PainPoint
+              icon={<Presentation />}
+              title="Your deck buries the offer"
+              body="A 3-persona review (Klaff, Hormozi, Schwartz) scores Frame, Offer, Desire and rewrites the weakest slide in 3 archetypes — with a 30-second narrated pitch."
+            />
+            <PainPoint
+              icon={<Mic />}
+              title="Your discovery calls drift"
+              body="A live JTBD switch chart populates while you talk — Push · Pull · Anxiety · Habit — and nudges you mid-call when a quadrant stays empty."
+            />
+            <PainPoint
+              icon={<FileSearch />}
+              title="Your losses go un-debriefed"
+              body="Drop a transcript + win/loss tag. Four async pipelines extract objections, JTBD patterns, classification, and verbatim buyer language as a PDF digest."
+            />
+          </div>
+        </section>
+
+        {/* SOLUTION / HOW IT WORKS */}
+        <section id="how-it-works" className="rise-in stagger-2 scroll-mt-24">
+          <div className="mb-8 md:mb-10 max-w-2xl">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">
+              The fix · 3 agents
+            </p>
+            <h2 className="mt-2 font-serif text-3xl md:text-4xl text-navy leading-tight">
+              Drop in a file. Get specifics. Ship today.
+            </h2>
+            <p className="mt-3 text-[15px] text-neutral-700 leading-relaxed">
+              Each agent does one thing well. No CRM hookup, no onboarding
+              call — sign in with your name, upload, get an answer in under 90
+              seconds.
+            </p>
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <AgentCard
               icon={<Presentation />}
               name="Pitch Surgeon"
               sponsor="Gemini · multimodal"
-              desc="Drop a deck. A 3-persona council scores Frame, Offer, Desire — then rewrites the weakest slide in three archetypes."
-              href="/pitch"
+              desc="Drop a .pptx or .pdf. 3-persona council scores Frame, Offer, Desire — then rewrites the weakest slide in 3 archetypes with a 30-second narrated pitch."
+              href="/login?next=/pitch"
               stat="$0.04 / deck"
               delay="stagger-1"
             />
@@ -60,8 +138,8 @@ export default function Home() {
               icon={<Mic />}
               name="Discovery Co-Pilot"
               sponsor="Speechmatics · real-time"
-              desc="Live JTBD switch chart populates while you talk. Push · Pull · Anxiety · Habit — plus mid-call nudges."
-              href="/call"
+              desc="Live JTBD switch chart populates while you talk. Push · Pull · Anxiety · Habit — plus mid-call nudges if a quadrant stays empty."
+              href="/login?next=/call"
               stat="< 2s latency"
               delay="stagger-2"
             />
@@ -69,28 +147,209 @@ export default function Home() {
               icon={<FileSearch />}
               name="Win-Loss Auditor"
               sponsor="Featherless · async"
-              desc="Async 4-stage pipeline: objections, JTBD patterns, classification, verbatim buyer language. Emailed as PDF."
-              href="/audit"
+              desc="4-stage async pipeline: objections, JTBD patterns, classification, verbatim buyer language. Emailed as a PDF digest when complete."
+              href="/login?next=/audit"
               stat="~ 90s / deal"
               delay="stagger-3"
             />
           </div>
         </section>
 
-        {/* Powered by */}
+        {/* DIFFERENTIATORS */}
+        <section className="rise-in stagger-3">
+          <div className="mb-8 max-w-2xl">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">
+              Why not just a prompt
+            </p>
+            <h2 className="mt-2 font-serif text-3xl md:text-4xl text-navy leading-tight">
+              ChatGPT won&apos;t do this.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <Differentiator
+              icon={<Zap />}
+              title="Built around your workflow"
+              body="Three purpose-built pipelines, not a chatbot. Each agent has a real domain model — slide critique schema, JTBD quadrants, win-loss evidence chains."
+            />
+            <Differentiator
+              icon={<Sparkles />}
+              title="Structured outputs, not prose"
+              body="Numeric scores, ranked rewrites, verbatim quotes with timestamps. Drop the results into Notion, your CRM, or a Slack message — no copy-edit required."
+            />
+            <Differentiator
+              icon={<Lock />}
+              title="Your data, your bucket"
+              body="Decks, transcripts, and digests live in your Vultr Object Storage. We don&apos;t train on your inputs. MIT-licensed code — fork it, self-host it."
+            />
+          </div>
+        </section>
+
+        {/* FAQ */}
         <section className="rise-in stagger-4">
-          <h3 className="mb-4 font-mono text-[11px] uppercase tracking-wider text-neutral-500">
-            Powered by
-          </h3>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            <BrandChip label="Gemini" logo={<GeminiMark />} />
-            <BrandChip label="Speechmatics" logo={<SpeechmaticsMark />} />
-            <BrandChip label="Featherless" logo={<FeatherlessMark />} />
-            <BrandChip label="Vultr" logo={<VultrMark />} />
+          <div className="mb-8 max-w-2xl">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">
+              FAQ
+            </p>
+            <h2 className="mt-2 font-serif text-3xl md:text-4xl text-navy leading-tight">
+              Quick answers.
+            </h2>
+          </div>
+          <ul className="divide-y divide-[rgba(189,215,255,0.5)] border-y border-[rgba(189,215,255,0.5)]">
+            <Faq
+              q="What does it cost?"
+              a="Free during beta — no card on file. Backed by free-tier Gemini and Featherless quotas plus a small Vultr VM. We&apos;ll switch to paid plans once we hit real usage."
+            />
+            <Faq
+              q="Do I need to integrate my CRM?"
+              a="No. Drop in a deck or paste a call transcript. No HubSpot, no Salesforce, no Zapier glue. The auditor accepts a deal_id you choose (free-form text — match to your CRM later if you want)."
+            />
+            <Faq
+              q="Where does my data go?"
+              a="Decks, transcripts, and PDFs are stored in Vultr Object Storage (S3-compatible). Structured analysis lives in Postgres. We don&apos;t train on your inputs. The full source is MIT-licensed at github.com/fozagtx/Revagent."
+            />
+            <Faq
+              q="Is the call audio recorded?"
+              a="Audio streams to Speechmatics over a secure WebSocket for live diarized transcription. The transcript is persisted with the call; the raw audio is not retained after the call ends."
+            />
+            <Faq
+              q="How fast is the analysis?"
+              a="Pitch decks: under 90 seconds end-to-end for a 10–15 slide deck. Discovery call switch-chart: under 2-second latency mid-call. Win-loss audit: ~90 seconds per deal."
+            />
+            <Faq
+              q="What if Gemini fails?"
+              a="Each pipeline reports the exact failure cause (quota, parse error, missing libreoffice on host). You're never stuck guessing — the UI prints the real error."
+            />
+          </ul>
+        </section>
+
+        {/* FINAL CTA */}
+        <section className="rise-in stagger-5">
+          <div className="frosted rounded-hero p-8 md:p-12 text-center">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">
+              Stop guessing
+            </p>
+            <h2 className="mt-2 font-serif text-3xl md:text-5xl text-navy leading-tight max-w-2xl mx-auto">
+              See your deck through your buyer&apos;s eyes — in 60 seconds.
+            </h2>
+            <p className="mt-3 text-[15px] text-neutral-700 max-w-xl mx-auto">
+              Type your name. Drop a deck. Get the scores, the rewrite, and the
+              narration. Free during beta.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/login?next=/pitch"
+                className="btn-cta inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-[15px] font-semibold tracking-ui transition duration-charms ease-charms"
+              >
+                Start free
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="https://github.com/fozagtx/Revagent"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-12 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-6 text-[15px] font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
+              >
+                Star on GitHub
+              </Link>
+            </div>
           </div>
         </section>
       </div>
     </>
+  );
+}
+
+function PainPoint({
+  icon,
+  title,
+  body,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+}) {
+  return (
+    <Card variant="white" className="h-full lift">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-50 text-red-600 [&_svg]:h-4 [&_svg]:w-4">
+        <XCircle />
+      </div>
+      <p className="mt-3 inline-flex items-center gap-2 text-[11px] font-mono tracking-wider uppercase text-red-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+        Today
+      </p>
+      <h3 className="mt-1 text-lg font-semibold tracking-ui text-navy">
+        {title}
+      </h3>
+      <p className="mt-2 text-[14px] leading-relaxed text-neutral-700">
+        {body}
+      </p>
+      <div className="mt-4 flex items-center gap-2 text-[12px] font-semibold text-blue-700">
+        <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+        <span className="inline-flex items-center gap-1.5">
+          With RevAgent
+          {icon ? (
+            <span className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-md bg-blue-100 text-blue-700 [&_svg]:h-3 [&_svg]:w-3">
+              {icon}
+            </span>
+          ) : null}
+        </span>
+      </div>
+    </Card>
+  );
+}
+
+function Differentiator({
+  icon,
+  title,
+  body,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+}) {
+  return (
+    <Card className="h-full lift">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-100 text-blue-700 [&_svg]:h-4 [&_svg]:w-4">
+        {icon}
+      </div>
+      <h3 className="mt-3 text-lg font-semibold tracking-ui text-navy">
+        {title}
+      </h3>
+      <p className="mt-2 text-[14px] leading-relaxed text-neutral-700">
+        {body}
+      </p>
+    </Card>
+  );
+}
+
+function Faq({ q, a }: { q: string; a: string }) {
+  return (
+    <li>
+      <details className="group">
+        <summary className="flex cursor-pointer list-none items-start gap-4 py-5 outline-none">
+          <span className="flex-1 text-[15px] font-semibold tracking-ui text-navy">
+            {q}
+          </span>
+          <span
+            aria-hidden="true"
+            className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[rgba(189,215,255,0.6)] bg-white text-blue-700 transition-transform duration-charms ease-charms group-open:rotate-180"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path
+                d="m6 9 6 6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </summary>
+        <p className="pb-5 pr-12 text-[14px] leading-relaxed text-neutral-700">
+          {a}
+        </p>
+      </details>
+    </li>
   );
 }
 
@@ -154,7 +413,9 @@ function BrandChip({ label, logo }: { label: string; logo: React.ReactNode }) {
       >
         {logo}
       </span>
-      <span className="font-semibold tracking-ui text-navy truncate">{label}</span>
+      <span className="font-semibold tracking-ui text-navy truncate">
+        {label}
+      </span>
     </div>
   );
 }
@@ -193,7 +454,16 @@ function SpeechmaticsMark() {
 
 function FeatherlessMark() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="#0F172A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="none"
+      stroke="#0F172A"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
       <line x1="16" y1="8" x2="2" y2="22" />
       <line x1="17.5" y1="15" x2="9" y2="15" />
@@ -204,10 +474,7 @@ function FeatherlessMark() {
 function VultrMark() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-      <path
-        fill="#007BFC"
-        d="M2.5 5h5L12 13.2 16.5 5h5L13 21h-2L2.5 5z"
-      />
+      <path fill="#007BFC" d="M2.5 5h5L12 13.2 16.5 5h5L13 21h-2L2.5 5z" />
     </svg>
   );
 }
