@@ -439,16 +439,29 @@ function CallSummary({
           ))}
         </ol>
       </Card>
-      <div className="space-y-1">
-        <p className="font-mono text-[11px] tracking-wider text-neutral-500 break-all">
-          call_id · {callId}
-        </p>
-        {summary.speechmatics_session_id && (
-          <p className="font-mono text-[11px] tracking-wider text-neutral-500 break-all">
-            speechmatics_session_id · {summary.speechmatics_session_id}
-          </p>
-        )}
-      </div>
+      <Card variant="white" className="space-y-3">
+        <CardEyebrow>References</CardEyebrow>
+        <div className="space-y-2">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+              call_id
+            </p>
+            <p className="mt-0.5 font-mono text-sm font-bold text-navy break-all select-all">
+              {callId}
+            </p>
+          </div>
+          {summary.speechmatics_session_id && (
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+                speechmatics_session_id
+              </p>
+              <p className="mt-0.5 font-mono text-sm font-bold text-navy break-all select-all">
+                {summary.speechmatics_session_id}
+              </p>
+            </div>
+          )}
+        </div>
+      </Card>
     </div>
   );
 }

@@ -144,7 +144,13 @@ export default function AuditPage() {
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <Field label="Deal ID" htmlFor="deal-id" required error={fieldError.deal}>
+          <Field
+            label="Deal ID"
+            htmlFor="deal-id"
+            required
+            error={fieldError.deal}
+            hint="Any string you'll recognize — company name, CRM id, or a slug. e.g. acme-q3-renewal."
+          >
             <Input
               id="deal-id"
               placeholder="e.g. acme-q3-renewal"
