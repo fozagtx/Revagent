@@ -127,18 +127,23 @@ export default function PitchPage() {
     if (!raw) return "Analysis failed. Try a different deck.";
     const msg = raw.toLowerCase();
     if (msg.includes("libreoffice")) {
-      return "PPTX conversion needs LibreOffice on the server. Export your deck as PDF and re-upload, or install LibreOffice (brew install --cask libreoffice).";
+      return "PPTX conversion needs LibreOffice on the server. Export your deck as PDF and re-upload.";
+    }
+    if (msg.includes("featherless") && (msg.includes("429") || msg.includes("quota") || msg.includes("rate"))) {
+      return "Both Gemini and Featherless are rate-limited right now. Wait a minute and retry.";
+    }
+    if (msg.includes("featherless fallback returned invalid shape") || msg.includes("featherless fallback returned non-json")) {
+      return "Gemini was rate-limited and the Featherless fallback returned an unusable response. Retry — usually transient.";
     }
     if (msg.includes("429") || msg.includes("quota") || msg.includes("rate")) {
-      return "Gemini quota exceeded. Switch GEMINI_MODEL to gemini-2.5-flash (or wait for quota to reset) and retry.";
+      return "Provider is rate-limited. Retry in a few seconds — the system auto-falls-back to Featherless on the next attempt.";
     }
     if (msg.includes("no slides extracted")) {
       return "Couldn't read any slides from this file. It may be corrupted or empty.";
     }
-    if (msg.includes("invalid shape")) {
-      return "Gemini returned a malformed analysis. Retry — this is usually transient.";
+    if (msg.includes("invalid shape") || msg.includes("non-json")) {
+      return "LLM returned a malformed analysis. Retry — this is usually transient.";
     }
-    // Trim verbose Google API noise so the user sees the actionable bit
     const first = raw.split("\n")[0]?.trim() ?? raw;
     return first.length > 220 ? first.slice(0, 220) + "…" : first;
   }
