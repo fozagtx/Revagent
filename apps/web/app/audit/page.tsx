@@ -149,7 +149,6 @@ export default function AuditPage() {
             htmlFor="deal-id"
             required
             error={fieldError.deal}
-            hint="Any string you'll recognize — company name, CRM id, or a slug. e.g. acme-q3-renewal."
           >
             <Input
               id="deal-id"
@@ -159,6 +158,11 @@ export default function AuditPage() {
               invalid={!!fieldError.deal}
               disabled={submitting}
             />
+            {!fieldError.deal && (
+              <p className="mt-1.5 text-xs font-bold text-navy tracking-ui">
+                Any string you&apos;ll recognize — company name, CRM id, or a slug. e.g. acme-q3-renewal.
+              </p>
+            )}
           </Field>
           <Field label="Outcome" htmlFor="outcome">
             <Select
