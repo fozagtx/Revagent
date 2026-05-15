@@ -28,5 +28,8 @@ export async function withProviderFallback<T>(
 
 export function isRateLimitOrQuota(err: unknown): boolean {
   const m = err instanceof Error ? err.message : String(err);
-  return /\b429\b|quota|rate[\s-]?limit|exceeded|resource[_\s]exhausted/i.test(m);
+  // Triggers fallback for transient throttling AND for permanent provider-side
+  // failures (revoked / leaked / forbidden keys, auth errors). Anything that
+  // means "this provider can't serve us right now" → swap providers.
+  return /\b(429|403|401)\b|quota|rate[\s-]?limit|exceeded|resource[_\s]exhausted|permission[_\s]denied|forbidden|leaked|unauthorized|invalid[_\s]api[_\s]key/i.test(m);
 }
