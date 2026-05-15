@@ -58,10 +58,13 @@ export function verifyWebhookSignature(body: string, signatureHeader: string | n
 }
 
 export function setSessionCookie(c: Context, founderId: string): void {
+  const isProd = env().NODE_ENV === "production";
   setCookie(c, SESSION_COOKIE, signedToken(founderId), {
     httpOnly: true,
-    sameSite: "Lax",
-    secure: env().NODE_ENV === "production",
+    // SameSite=None + Secure required for cross-origin auth (web on Vercel,
+    // API on a different host). In dev, fall back to Lax over http.
+    sameSite: isProd ? "None" : "Lax",
+    secure: isProd,
     path: "/",
     maxAge: SESSION_MAX_AGE,
   });
@@ -72,6 +75,14 @@ export function clearSessionCookie(c: Context): void {
 }
 
 export async function readFounderFromRequest(req: Request): Promise<string | null> {
+  // 1. URL query token (used by WebSocket upgrade since browsers can't send
+  // custom headers on WS handshake and cross-origin cookies don't reach here).
+  const url = new URL(req.url);
+  const qToken = url.searchParams.get("token");
+  if (qToken) {
+    const id = verifyToken(qToken);
+    if (id) return id;
+  }
   const cookieHeader = req.headers.get("cookie") ?? "";
   const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]+)`));
   if (match?.[1]) {

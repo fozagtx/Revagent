@@ -16,7 +16,12 @@ const e = env();
 const app = new Hono();
 app.use("*", logger());
 app.use("*", cors({
-  origin: [e.APP_BASE_URL, "http://localhost:3000", "http://localhost:3003"],
+  origin: [
+    e.APP_BASE_URL,
+    "http://localhost:3000",
+    "http://localhost:3003",
+    "https://revagent.vercel.app",
+  ],
   credentials: true,
 }));
 

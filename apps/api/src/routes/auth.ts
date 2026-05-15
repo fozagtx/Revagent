@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { getDb, founders } from "@revagent/db";
 import { eq } from "drizzle-orm";
-import { setSessionCookie, clearSessionCookie, requireFounder, getFounderId } from "../lib/auth";
+import { setSessionCookie, clearSessionCookie, requireFounder, getFounderId, signedToken } from "../lib/auth";
 
 const auth = new Hono<{ Variables: { founderId: string } }>();
 
@@ -42,6 +42,13 @@ auth.post("/login", async (c) => {
 auth.post("/logout", async (c) => {
   clearSessionCookie(c);
   return c.json({ ok: true });
+});
+
+// Returns the founder's signed token for use in WebSocket URLs (the WS
+// handshake can't send custom headers, and cross-origin cookies don't reach
+// the API host once we host it on a different domain than the web app).
+auth.get("/ws-token", requireFounder, async (c) => {
+  return c.json({ token: signedToken(getFounderId(c)) });
 });
 
 auth.get("/me", requireFounder, async (c) => {

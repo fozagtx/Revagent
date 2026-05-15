@@ -1,0 +1,13 @@
+# Caddy auto-issues LetsEncrypt cert for the nip.io hostname.
+# nip.io resolves any host of the form X-X-X-X.nip.io to X.X.X.X — no DNS setup needed.
+
+45-77-55-94.nip.io {
+    encode gzip
+    reverse_proxy api:4000 {
+        # Preserve upgrade headers for WebSocket
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}

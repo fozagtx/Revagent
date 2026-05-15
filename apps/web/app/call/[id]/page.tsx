@@ -101,7 +101,22 @@ export default function LiveCall() {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const wsUrl = `${location.origin.replace(/^http/, "ws")}/api/call/${params.id}/stream`;
+      // 1. Fetch a short-lived token via the Vercel proxy (cookie-authed).
+      // 2. Open WS directly to the API host (cross-origin) with the token in URL.
+      //    Vercel can't proxy WebSocket upgrades, so we must bypass it for WS.
+      let token: string | null = null;
+      try {
+        const r = await authedFetch("/api/auth/ws-token");
+        if (r.ok) token = ((await r.json()) as { token: string }).token;
+      } catch {
+        /* fall through — server will reject and we'll show an error */
+      }
+
+      const apiBase =
+        process.env.NEXT_PUBLIC_API_BASE_URL ?? location.origin;
+      const wsBase = apiBase.replace(/^http/, "ws");
+      const wsUrl = `${wsBase}/api/call/${params.id}/stream${token ? `?token=${encodeURIComponent(token)}` : ""}`;
+
       const ws = new WebSocket(wsUrl);
       ws.binaryType = "arraybuffer";
       wsRef.current = ws;
