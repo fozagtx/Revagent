@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "concurrently -n web,api -c blue,green \"bun run --cwd apps/web dev\" \"bun run --cwd apps/api dev\"",
     "build": "bun run --cwd apps/web build && bun run --cwd apps/api build",
-    "typecheck": "tsc -b apps/web apps/api packages/db packages/shared --noEmit",
+    "typecheck": "tsc -p packages/shared --noEmit && tsc -p packages/db --noEmit && tsc -p apps/api --noEmit && tsc -p apps/web --noEmit",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "db:generate": "bun run --cwd packages/db drizzle-kit generate",
     "db:migrate": "bun run --cwd packages/db drizzle-kit migrate",
