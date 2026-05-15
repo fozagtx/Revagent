@@ -24,6 +24,7 @@ export const JTBD_PROBES: Record<Quadrant, string[]> = {
 };
 
 export function suggestProbe(quadrant: Quadrant, askedAlready: string[]): string {
-  const pool = JTBD_PROBES[quadrant].filter((p) => !askedAlready.includes(p));
-  return pool[0] ?? JTBD_PROBES[quadrant][0]!;
+  const probes = JTBD_PROBES[quadrant] ?? [];
+  const pool = probes.filter((p) => !askedAlready.includes(p));
+  return pool[0] ?? probes[0] ?? "What would you change about how this works today?";
 }

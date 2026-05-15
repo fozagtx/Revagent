@@ -27,8 +27,9 @@ export async function getDemoFounderId(): Promise<string> {
     row = inserted;
   }
   if (!row) throw new Error("Failed to bootstrap demo founder");
-  _demoFounderId = row.id;
-  return _demoFounderId;
+  const id = row.id;
+  _demoFounderId = id;
+  return id;
 }
 
 export function signedToken(founderId: string): string {

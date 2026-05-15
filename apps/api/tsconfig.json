@@ -1,15 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
     "types": ["bun"],
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*"],
-  "references": [
-    { "path": "../../packages/db" },
-    { "path": "../../packages/shared" }
-  ]
+  "include": ["src/**/*"]
 }

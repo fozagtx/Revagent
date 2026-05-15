@@ -26,11 +26,11 @@ function Digest({ audits }: DigestProps) {
   const lostAudits = audits.filter((a) => a.outcome === "lost");
 
   const wonPatterns = wonAudits.flatMap((a) =>
-    ((a.jtbdPatterns as JtbdPatterns | null)?.pattern_match ?? []).map((p) => ({ pattern: p, dealId: a.dealId })),
+    ((a.jtbdPatterns as JtbdPatterns | null)?.pattern_match ?? []).map((p: string) => ({ pattern: p, dealId: a.dealId })),
   ).slice(0, 3);
 
   const lostPatterns = lostAudits.flatMap((a) =>
-    ((a.jtbdPatterns as JtbdPatterns | null)?.pattern_match ?? []).map((p) => ({ pattern: p, dealId: a.dealId })),
+    ((a.jtbdPatterns as JtbdPatterns | null)?.pattern_match ?? []).map((p: string) => ({ pattern: p, dealId: a.dealId })),
   ).slice(0, 2);
 
   const objections = audits.flatMap((a) =>

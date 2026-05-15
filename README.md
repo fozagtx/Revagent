@@ -2,7 +2,7 @@
 
 > Sales intelligence for early-stage founders. 3 AI agents that fix every founder's pitch, discovery, and win-loss workflow.
 
-Built for **AI Agent Olympics @ Milan AI Week 2026**. Released under MIT.
+Released under MIT.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
