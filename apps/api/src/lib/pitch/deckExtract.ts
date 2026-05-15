@@ -60,7 +60,15 @@ export async function extractDeck(args: {
     const ext = extname(filename).toLowerCase();
     let pdfPath = srcPath;
     if (ext !== ".pdf") {
-      await run("libreoffice", ["--headless", "--convert-to", "pdf", "--outdir", workdir, srcPath]);
+      try {
+        await run("libreoffice", ["--headless", "--convert-to", "pdf", "--outdir", workdir, srcPath]);
+      } catch (err) {
+        const m = err instanceof Error ? err.message : String(err);
+        if (m.includes("ENOENT") || m.toLowerCase().includes("not found")) {
+          throw new Error("PPTX conversion requires LibreOffice on the server. Export the deck as PDF and re-upload, or install LibreOffice.");
+        }
+        throw err;
+      }
       const pdfName = filename.replace(extname(filename), ".pdf");
       pdfPath = join(workdir, pdfName);
     }

@@ -6,17 +6,31 @@ out
 .turbo
 .DS_Store
 *.log
+*.tsbuildinfo
 
 .env
 .env.local
 .env.*.local
 
-bun.lockb
+# Bun lockfile — keep it for reproducible builds (remove from ignore so CI/Vercel can use it)
 .bun
 
 apps/web/.next
 apps/api/dist
 packages/db/drizzle/meta
+
+# Claude assistant artifacts — do not commit
+.claude/
+.claude-workspace/
+.cursor/
+.aider*
+CLAUDE.md
+progress.md
+plan.md
+Agents.md
+
+# Vercel
+.vercel
 
 tests/fixtures/decks/*
 !tests/fixtures/decks/.gitkeep

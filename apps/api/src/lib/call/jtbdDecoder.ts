@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, type SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { z } from "zod";
 import { env } from "../env";
 import type { TranscriptUtterance, Quadrant, SwitchEvidence } from "@revagent/shared";
@@ -13,24 +13,24 @@ const DecodeResultSchema = z.object({
 });
 
 const responseSchema = {
-  type: "object" as SchemaType,
+  type: SchemaType.OBJECT,
   properties: {
     signals: {
-      type: "array",
+      type: SchemaType.ARRAY,
       items: {
-        type: "object",
+        type: SchemaType.OBJECT,
         properties: {
-          quadrant: { type: "string", enum: ["push", "pull", "anxiety", "habit"] },
-          quote: { type: "string" },
-          confidence: { type: "number" },
-          rationale: { type: "string" },
+          quadrant: { type: SchemaType.STRING, enum: ["push", "pull", "anxiety", "habit"] },
+          quote: { type: SchemaType.STRING },
+          confidence: { type: SchemaType.NUMBER },
+          rationale: { type: SchemaType.STRING },
         },
         required: ["quadrant", "quote", "confidence"],
       },
     },
   },
   required: ["signals"],
-} as const;
+};
 
 const SYSTEM = `You are a real-time JTBD switch-interview decoder. You read a rolling 5-second window of a sales discovery-call transcript and identify any new evidence of:
 
@@ -55,9 +55,7 @@ function model() {
     model: "gemini-2.5-flash",
     systemInstruction: SYSTEM,
     generationConfig: {
-      // @ts-expect-error schema typing
       responseMimeType: "application/json",
-      // @ts-expect-error schema typing
       responseSchema,
       temperature: 0.2,
     },
@@ -116,12 +114,15 @@ export async function generateFollowUps(args: {
   const m = genai.getGenerativeModel({
     model: "gemini-2.5-flash",
     generationConfig: {
-      // @ts-expect-error schema
       responseMimeType: "application/json",
-      // @ts-expect-error schema
       responseSchema: {
-        type: "object",
-        properties: { questions: { type: "array", items: { type: "string" }, minItems: 3, maxItems: 3 } },
+        type: SchemaType.OBJECT,
+        properties: {
+          questions: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+          },
+        },
         required: ["questions"],
       },
       temperature: 0.5,

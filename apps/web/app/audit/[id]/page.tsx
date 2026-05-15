@@ -7,7 +7,7 @@ import { Card, CardTitle, CardDescription, CardEyebrow } from "@/components/ui/c
 import { PageHeader } from "@/components/ui/pageHeader";
 import { StatusBadge, type StatusTone } from "@/components/ui/statusBadge";
 import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
-import { DEMO_FOUNDER_ID } from "@/lib/utils";
+import { authedFetch } from "@/lib/utils";
 import type {
   Objection,
   JtbdPatterns,
@@ -54,9 +54,7 @@ export default function AuditDetailPage() {
 
     const fetchOne = async () => {
       try {
-        const r = await fetch(`/api/audit/${params.id}`, {
-          headers: { "x-founder-id": DEMO_FOUNDER_ID },
-        });
+        const r = await authedFetch(`/api/audit/${params.id}`);
         if (r.ok && alive) {
           const j = (await r.json()) as AuditDetail;
           setRow(j);
@@ -84,7 +82,7 @@ export default function AuditDetailPage() {
   const isProcessing = !TERMINAL_CHECKPOINTS.has(row.pipeline_checkpoint);
 
   return (
-    <div className="space-y-8">
+    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
       <Link
         href="/audit"
         className="inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-neutral-600 hover:text-navy transition"
@@ -335,7 +333,7 @@ function QuadrantList({
 
 function LoadingState() {
   return (
-    <div className="space-y-8">
+    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
       <Skeleton className="h-3 w-24" />
       <div className="space-y-3">
         <Skeleton className="h-4 w-48" />

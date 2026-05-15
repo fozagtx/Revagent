@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb, calls } from "@revagent/db";
 import type { SwitchChart, TranscriptUtterance, WsSignal, Quadrant } from "@revagent/shared";
 import { getSpeechmaticsRtToken, buildStartRecognitionMessage } from "./speechmatics";
-import { decodeWindow } from "./jtbd-decoder";
+import { decodeWindow } from "./jtbdDecoder";
 import { maybeNudge } from "./nudge";
 import { env } from "../env";
 
@@ -24,7 +24,7 @@ interface SessionState {
 
 const sessions = new WeakMap<ServerWebSocket<unknown>, SessionState>();
 
-export function handleCallStreamUpgrade(req: Request, server: Server, callId: string): Response | undefined {
+export function handleCallStreamUpgrade(req: Request, server: Server<unknown>, callId: string): Response | undefined {
   const success = server.upgrade(req, {
     data: {
       onOpen: () => { /* set by start() below */ },
@@ -94,7 +94,8 @@ export function onWsMessage(ws: ServerWebSocket<unknown>, message: string | Buff
   if (state.speechmaticsReady && state.speechmaticsSocket?.readyState === WebSocket.OPEN) {
     state.speechmaticsSocket.send(message);
   } else {
-    state.audioBuffer.push(message.buffer.slice(message.byteOffset, message.byteOffset + message.byteLength));
+    const slice = message.buffer.slice(message.byteOffset, message.byteOffset + message.byteLength) as ArrayBuffer;
+    state.audioBuffer.push(slice);
   }
 }
 

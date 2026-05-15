@@ -1,9 +1,7 @@
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    typedRoutes: false,
-  },
+  typedRoutes: false,
   transpilePackages: ["@revagent/shared"],
   async rewrites() {
     const api = process.env.API_BASE_URL ?? "http://localhost:4000";

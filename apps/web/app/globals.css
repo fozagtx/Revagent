@@ -4,13 +4,13 @@
 
 :root {
   color-scheme: light;
-  --bg-sky: linear-gradient(rgb(189, 215, 255) 0%, rgb(255, 255, 255) 39.45%);
+  --page-bg: #EAF1FA;
+  --bg-sky: linear-gradient(180deg, rgb(168, 202, 252) 0%, rgb(189, 215, 255) 35%, #EAF1FA 100%);
   --bg-cta: linear-gradient(rgb(0, 68, 185) 5.5%, rgb(0, 116, 236) 35%, rgb(78, 177, 255) 65%, rgb(173, 217, 255) 95%);
   --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #155DFC;
 }
 
 html, body {
-  background-color: #ffffff;
   color: #002259;
   letter-spacing: -0.5px;
   -webkit-font-smoothing: antialiased;
@@ -18,14 +18,69 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
+/* Body uses the same sky gradient as the hero so the header (transparent) sits
+   inside that blue band naturally — no white/pale strip above the hero.
+   <html> matches the top color so overscroll bounce blends in. */
+html {
+  background-color: rgb(168, 202, 252);
+  overscroll-behavior-y: none;
+}
 body {
-  background-image: var(--bg-sky);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
   min-height: 100vh;
+  background-color: var(--page-bg);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(121,173,248,0.35), transparent 40%),
+    radial-gradient(circle at 90% 0%, rgba(121,173,248,0.30), transparent 40%),
+    linear-gradient(180deg,
+      rgb(168, 202, 252) 0%,
+      rgb(189, 215, 255) 35%,
+      #EAF1FA 70%,
+      #EAF1FA 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 700px, 100% 700px, 100% 100%;
+  background-position: top, top, top;
+  background-attachment: scroll, scroll, scroll;
+  overscroll-behavior-y: none;
 }
 
 * { box-sizing: border-box; }
+
+/* Centered page container — used by every route */
+.container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1223px;
+  padding-inline: 1rem;
+}
+@media (min-width: 768px) {
+  .container-page { padding-inline: 1.5rem; }
+}
+
+/* Hero region — inherits the body's sky gradient so the header sits in the
+   same band visually. No separate bg here; the body paints it. */
+.hero-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero-band::before,
+.hero-band::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: -1;
+  background-image: radial-gradient(circle, rgba(121,173,248,0.40) 0%, rgba(189,215,255,0.18) 50%, rgba(255,255,255,0) 80%);
+  filter: blur(2px);
+}
+.hero-band::before {
+  width: 620px; height: 620px;
+  top: -200px; left: -140px;
+}
+.hero-band::after {
+  width: 520px; height: 520px;
+  top: -80px; right: -120px;
+}
 
 /* Focus visibility — required for keyboard accessibility */
 :focus { outline: none; }
@@ -147,6 +202,23 @@ body {
 .stagger-2 { animation-delay: 90ms; }
 .stagger-3 { animation-delay: 150ms; }
 .stagger-4 { animation-delay: 220ms; }
+
+/* Indeterminate progress bar — used while async work runs */
+@keyframes progressSlide {
+  0%   { transform: translateX(-120%); }
+  60%  { transform: translateX(60%); }
+  100% { transform: translateX(220%); }
+}
+.progress-slide {
+  animation: progressSlide 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Soft halo pulse around an icon */
+@keyframes haloPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%      { transform: scale(1.18); opacity: 0.25; }
+}
+.halo-pulse { animation: haloPulse 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
 
 /* Hover lift, used on interactive cards */
 .lift {

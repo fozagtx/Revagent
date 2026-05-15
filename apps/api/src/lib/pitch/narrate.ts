@@ -24,14 +24,13 @@ async function geminiTts(script: string): Promise<{ audio: Buffer; mime: string 
 
   const result = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: script }] }],
-    // @ts-expect-error TTS config is in newer SDK versions
     generationConfig: {
       responseModalities: ["AUDIO"],
       speechConfig: {
         voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } },
       },
     },
-  });
+  } as Parameters<typeof model.generateContent>[0]);
 
   const part = result.response.candidates?.[0]?.content?.parts?.[0];
   const inline = (part as { inlineData?: { data: string; mimeType: string } } | undefined)?.inlineData;

@@ -7,8 +7,13 @@ export function cn(...inputs: ClassValue[]): string {
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
-export function demoFounderHeaders(founderId: string): HeadersInit {
-  return { "x-founder-id": founderId, "content-type": "application/json" };
+export async function authedFetch(input: string, init: RequestInit = {}): Promise<Response> {
+  return fetch(input, {
+    ...init,
+    credentials: "include",
+    headers: {
+      ...(init.body && !(init.body instanceof FormData) ? { "content-type": "application/json" } : {}),
+      ...(init.headers ?? {}),
+    },
+  });
 }
-
-export const DEMO_FOUNDER_ID = process.env.NEXT_PUBLIC_DEMO_FOUNDER_ID ?? "00000000-0000-0000-0000-000000000000";

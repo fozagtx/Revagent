@@ -1,4 +1,4 @@
-import { suggestProbe } from "../../prompts/jtbd-probes";
+import { suggestProbe } from "../../prompts/jtbdProbes";
 import type { Quadrant, SwitchChart } from "@revagent/shared";
 
 export const NUDGE_AFTER_MS = 8 * 60 * 1000;

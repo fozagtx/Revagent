@@ -1,8 +1,8 @@
-import { GoogleGenerativeAI, type SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { PitchAnalysisSchema, type PitchAnalysis } from "@revagent/shared";
 import { env } from "../env";
-import { PITCH_COUNCIL_SYSTEM } from "../../prompts/pitch-council";
-import type { ExtractedSlide } from "./deck-extract";
+import { PITCH_COUNCIL_SYSTEM } from "../../prompts/pitchCouncil";
+import type { ExtractedSlide } from "./deckExtract";
 
 export interface CouncilResult {
   analysis: PitchAnalysis;
@@ -10,34 +10,34 @@ export interface CouncilResult {
 }
 
 const responseSchema = {
-  type: "object" as SchemaType,
+  type: SchemaType.OBJECT,
   properties: {
-    frame_score: { type: "integer" },
-    offer_score: { type: "integer" },
-    desire_score: { type: "integer" },
-    weakest_slide: { type: "integer" },
-    strongest_archetype: { type: "string", enum: ["frame_control", "grand_slam", "desire_amp"] },
-    narration_script: { type: "string" },
+    frame_score: { type: SchemaType.INTEGER },
+    offer_score: { type: SchemaType.INTEGER },
+    desire_score: { type: SchemaType.INTEGER },
+    weakest_slide: { type: SchemaType.INTEGER },
+    strongest_archetype: { type: SchemaType.STRING, enum: ["frame_control", "grand_slam", "desire_amp"] },
+    narration_script: { type: SchemaType.STRING },
     slide_critiques: {
-      type: "array",
+      type: SchemaType.ARRAY,
       items: {
-        type: "object",
+        type: SchemaType.OBJECT,
         properties: {
-          idx: { type: "integer" },
-          frame: { type: "string" },
-          offer: { type: "string" },
-          desire: { type: "string" },
-          notes: { type: "string" },
+          idx: { type: SchemaType.INTEGER },
+          frame: { type: SchemaType.STRING },
+          offer: { type: SchemaType.STRING },
+          desire: { type: SchemaType.STRING },
+          notes: { type: SchemaType.STRING },
         },
         required: ["idx", "frame", "offer", "desire"],
       },
     },
     rewrites: {
-      type: "object",
+      type: SchemaType.OBJECT,
       properties: {
-        frame_control: { type: "array", items: rewriteItem() },
-        grand_slam: { type: "array", items: rewriteItem() },
-        desire_amp: { type: "array", items: rewriteItem() },
+        frame_control: { type: SchemaType.ARRAY, items: rewriteItem() },
+        grand_slam: { type: SchemaType.ARRAY, items: rewriteItem() },
+        desire_amp: { type: SchemaType.ARRAY, items: rewriteItem() },
       },
       required: ["frame_control", "grand_slam", "desire_amp"],
     },
@@ -47,19 +47,19 @@ const responseSchema = {
     "weakest_slide", "strongest_archetype", "narration_script",
     "slide_critiques", "rewrites",
   ],
-} as const;
+};
 
 function rewriteItem() {
   return {
-    type: "object",
+    type: SchemaType.OBJECT,
     properties: {
-      slide_idx: { type: "integer" },
-      original_text: { type: "string" },
-      rewritten_text: { type: "string" },
-      rationale: { type: "string" },
+      slide_idx: { type: SchemaType.INTEGER },
+      original_text: { type: SchemaType.STRING },
+      rewritten_text: { type: SchemaType.STRING },
+      rationale: { type: SchemaType.STRING },
     },
     required: ["slide_idx", "original_text", "rewritten_text", "rationale"],
-  } as const;
+  };
 }
 
 export async function runPitchCouncil(slides: ExtractedSlide[]): Promise<CouncilResult> {
@@ -69,9 +69,7 @@ export async function runPitchCouncil(slides: ExtractedSlide[]): Promise<Council
     model: e.GEMINI_MODEL,
     systemInstruction: PITCH_COUNCIL_SYSTEM,
     generationConfig: {
-      // @ts-expect-error responseSchema typing differs between SDK versions
       responseMimeType: "application/json",
-      // @ts-expect-error see above
       responseSchema,
       temperature: 0.4,
     },
@@ -88,12 +86,26 @@ export async function runPitchCouncil(slides: ExtractedSlide[]): Promise<Council
   ]);
 
   const requestId = `pitch-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: `Deck has ${slides.length} slides. Analyze and respond as instructed.` }, ...parts] }],
-  });
+  let result;
+  try {
+    result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: `Deck has ${slides.length} slides. Analyze and respond as instructed.` }, ...parts] }],
+    });
+  } catch (err) {
+    const m = err instanceof Error ? err.message : String(err);
+    if (m.includes("429") || /quota|rate limit/i.test(m)) {
+      throw new Error(`Gemini quota exceeded for ${e.GEMINI_MODEL}. Switch GEMINI_MODEL to gemini-2.5-flash or wait for quota reset.`);
+    }
+    throw err;
+  }
 
   const text = result.response.text();
-  const json = JSON.parse(text);
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new Error("Gemini returned non-JSON output. Retry — this is usually transient.");
+  }
   const parsed = PitchAnalysisSchema.safeParse(json);
   if (!parsed.success) {
     throw new Error(`Gemini council returned invalid shape: ${parsed.error.message}`);

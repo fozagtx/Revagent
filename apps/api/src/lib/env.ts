@@ -31,6 +31,10 @@ const EnvSchema = z.object({
   APP_BASE_URL: z.string().default("http://localhost:3000"),
   API_BASE_URL: z.string().default("http://localhost:4000"),
   APP_SHARED_SECRET: z.string().min(16),
+
+  // Dev escape hatch — when "true", skip auth and use DEV_DEMO_EMAIL as the founder.
+  AUTH_DISABLED: z.string().optional(),
+  DEV_DEMO_EMAIL: z.string().email().default("demo@revagent.local"),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

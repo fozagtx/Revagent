@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/ui/pageHeader";
 import { StatusBadge } from "@/components/ui/statusBadge";
 import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/emptyState";
-import { DEMO_FOUNDER_ID } from "@/lib/utils";
+import { authedFetch } from "@/lib/utils";
 import type { ArchetypeRewrite, SlideCritique } from "@revagent/shared";
 
 type Archetype = "frame_control" | "grand_slam" | "desire_amp";
@@ -46,9 +46,7 @@ export default function PitchAnalysisPage() {
 
     const fetchIt = async () => {
       try {
-        const r = await fetch(`/api/pitch/${params.id}`, {
-          headers: { "x-founder-id": DEMO_FOUNDER_ID },
-        });
+        const r = await authedFetch(`/api/pitch/${params.id}`);
         if (r.ok && alive) {
           const j = (await r.json()) as PitchRow;
           setRow(j);
@@ -81,7 +79,7 @@ export default function PitchAnalysisPage() {
   const isProcessing = row.status !== "complete" && row.status !== "failed";
 
   return (
-    <div className="space-y-8">
+    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
       <Link
         href="/pitch"
         className="inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-neutral-600 hover:text-navy transition"
@@ -118,7 +116,7 @@ export default function PitchAnalysisPage() {
         <ScoreCard label="Desire" sublabel="Schwartz" score={row.desire_score} />
       </section>
 
-      {row.weakest_slide_idx !== null && (
+      {row.weakest_slide_idx != null && (
         <Card
           variant="white"
           className="rise-in stagger-2 border-l-4 border-l-blue-700"
@@ -126,7 +124,7 @@ export default function PitchAnalysisPage() {
           <CardEyebrow>Weakest slide</CardEyebrow>
           <CardTitle className="mt-1">Slide #{row.weakest_slide_idx + 1}</CardTitle>
           <CardDescription className="mt-2 text-neutral-700">
-            {row.slide_critiques[row.weakest_slide_idx]?.notes ??
+            {row.slide_critiques?.[row.weakest_slide_idx]?.notes ??
               "Critique not yet available."}
           </CardDescription>
         </Card>
@@ -230,7 +228,7 @@ export default function PitchAnalysisPage() {
       )}
 
       {row.gemini_request_id && (
-        <p className="font-mono text-[11px] tracking-wider text-neutral-500">
+        <p className="font-mono text-[11px] tracking-wider text-neutral-500 break-all">
           gemini_request_id · {row.gemini_request_id}
         </p>
       )}
@@ -266,9 +264,11 @@ function ScoreCard({
       {score === null ? (
         <Skeleton className="mt-3 h-12 w-24" />
       ) : (
-        <p className={`mt-3 font-serif text-5xl tabular-nums leading-none ${tone}`}>
+        <p className={`mt-3 font-serif text-4xl sm:text-5xl tabular-nums leading-none ${tone}`}>
           {score}
-          <span className="text-2xl text-neutral-400">/10</span>
+          <span className="ml-0.5 text-xl sm:text-2xl font-semibold text-navy/70">
+            /10
+          </span>
         </p>
       )}
     </Card>
@@ -277,7 +277,7 @@ function ScoreCard({
 
 function LoadingState() {
   return (
-    <div className="space-y-8">
+    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
       <div className="space-y-3">
         <Skeleton className="h-3 w-32" />
         <Skeleton className="h-9 w-72" />

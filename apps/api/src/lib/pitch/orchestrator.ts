@@ -3,8 +3,8 @@ import { getDb, pitchAnalyses } from "@revagent/db";
 import {
   buildObjectKey, makeS3Client, storageConfigFromEnv, uploadBuffer,
 } from "@revagent/shared";
-import { extractDeck } from "./deck-extract";
-import { runPitchCouncil } from "./gemini-council";
+import { extractDeck } from "./deckExtract";
+import { runPitchCouncil } from "./geminiCouncil";
 import { narrateScript } from "./narrate";
 
 export interface AnalyzeArgs {

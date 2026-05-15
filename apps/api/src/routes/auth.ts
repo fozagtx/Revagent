@@ -2,9 +2,9 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { getDb, founders } from "@revagent/db";
 import { eq } from "drizzle-orm";
-import { signedToken } from "../lib/auth";
+import { setSessionCookie, clearSessionCookie, requireFounder, getFounderId } from "../lib/auth";
 
-const auth = new Hono();
+const auth = new Hono<{ Variables: { founderId: string } }>();
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -30,10 +30,31 @@ auth.post("/login", async (c) => {
   }
   if (!founderRow) return c.json({ error: "Failed to create founder" }, 500);
 
+  setSessionCookie(c, founderRow.id);
+
   return c.json({
     founder_id: founderRow.id,
     email: founderRow.email,
-    token: signedToken(founderRow.id),
+    display_name: founderRow.displayName,
+  });
+});
+
+auth.post("/logout", async (c) => {
+  clearSessionCookie(c);
+  return c.json({ ok: true });
+});
+
+auth.get("/me", requireFounder, async (c) => {
+  const db = getDb();
+  const [row] = await db.select().from(founders).where(eq(founders.id, getFounderId(c))).limit(1);
+  if (!row) {
+    clearSessionCookie(c);
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  return c.json({
+    founder_id: row.id,
+    email: row.email,
+    display_name: row.displayName,
   });
 });
 

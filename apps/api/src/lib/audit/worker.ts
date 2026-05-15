@@ -1,7 +1,7 @@
 import { sql, eq } from "drizzle-orm";
 import { getDb, auditJobs, audits } from "@revagent/db";
 import { runStage, type PipelineStage } from "./pipeline";
-import { generateDigestPdf } from "./digest-pdf";
+import { generateDigestPdf } from "./digestPdf";
 import {
   buildObjectKey, makeS3Client, storageConfigFromEnv, uploadBuffer,
 } from "@revagent/shared";
@@ -39,6 +39,7 @@ interface ClaimedJob {
   audit_id: string;
   stage: PipelineStage;
   attempts: number;
+  [k: string]: unknown;
 }
 
 async function claimNextJob(): Promise<ClaimedJob | null> {

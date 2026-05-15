@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { env } from "./lib/env";
+import { readFounderFromRequest } from "./lib/auth";
 import health from "./routes/health";
 import auth from "./routes/auth";
 import pitch from "./routes/pitch";
@@ -15,7 +16,7 @@ const e = env();
 const app = new Hono();
 app.use("*", logger());
 app.use("*", cors({
-  origin: [e.APP_BASE_URL, "http://localhost:3000"],
+  origin: [e.APP_BASE_URL, "http://localhost:3000", "http://localhost:3003"],
   credentials: true,
 }));
 
@@ -33,16 +34,18 @@ app.onError((err, c) => {
   return c.json({ error: "Internal error", message: err.message }, 500);
 });
 
-interface CallStreamData { _callId: string }
+interface CallStreamData { _callId: string; _founderId: string; [k: string]: unknown }
 
 const server = Bun.serve<CallStreamData>({
   port: e.PORT,
-  fetch(req, server) {
+  async fetch(req, server) {
     const url = new URL(req.url);
     const match = url.pathname.match(/^\/api\/call\/([0-9a-f-]+)\/stream$/);
     if (match && req.headers.get("upgrade") === "websocket") {
+      const founderId = await readFounderFromRequest(req);
+      if (!founderId) return new Response("Unauthorized", { status: 401 });
       const callId = match[1]!;
-      const ok = server.upgrade(req, { data: { _callId: callId } });
+      const ok = server.upgrade(req, { data: { _callId: callId, _founderId: founderId } });
       if (!ok) return new Response("Failed to upgrade", { status: 426 });
       return undefined as unknown as Response;
     }

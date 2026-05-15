@@ -15,7 +15,7 @@ import type {
   TranscriptUtterance,
   Quadrant,
 } from "@revagent/shared";
-import { DEMO_FOUNDER_ID } from "@/lib/utils";
+import { authedFetch } from "@/lib/utils";
 import { startMicCapture, type MicCapture } from "./_lib/recorder";
 
 interface Nudge {
@@ -186,9 +186,8 @@ export default function LiveCall() {
     micRef.current?.stop();
     wsRef.current?.close();
     try {
-      const r = await fetch(`/api/call/${params.id}/end`, {
+      const r = await authedFetch(`/api/call/${params.id}/end`, {
         method: "POST",
-        headers: { "x-founder-id": DEMO_FOUNDER_ID },
       });
       if (r.ok) setFinal((await r.json()) as FinalSummary);
     } finally {
@@ -199,7 +198,7 @@ export default function LiveCall() {
   if (final) return <CallSummary summary={final} callId={params.id} />;
 
   return (
-    <div className="space-y-7">
+    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-7">
       <Link
         href="/call"
         className="inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-neutral-600 hover:text-navy transition"
@@ -210,7 +209,7 @@ export default function LiveCall() {
 
       <PageHeader
         eyebrow={
-          <span className="inline-flex items-center gap-2">
+          <span className="inline-flex items-center gap-2 flex-wrap">
             {connected ? (
               <StatusBadge tone="success" pulse>
                 Live
@@ -225,7 +224,7 @@ export default function LiveCall() {
             {sessionId && (
               <>
                 <span className="text-neutral-400">·</span>
-                <span className="font-mono text-neutral-500 truncate max-w-[160px]">
+                <span className="font-mono text-neutral-500 truncate max-w-[140px] sm:max-w-[200px]">
                   {sessionId}
                 </span>
               </>
@@ -373,15 +372,15 @@ function QuadrantCard({ q, evidence }: { q: Quadrant; evidence: SwitchEvidence[]
   const m = QUADRANT_META[q];
   return (
     <Card className={`border ${m.ring}`}>
-      <div className="flex items-baseline justify-between gap-2">
-        <div className="flex items-center gap-2">
+      <div className="flex items-baseline justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap min-w-0">
           <span className={`h-2 w-2 rounded-full ${m.dot}`} aria-hidden="true" />
           <h3 className="font-semibold tracking-ui text-navy text-lg">
             {m.title}
           </h3>
           <span className="text-xs text-neutral-500">{m.sub}</span>
         </div>
-        <span className="font-mono text-[11px] tabular-nums text-neutral-500">
+        <span className="font-mono text-[11px] tabular-nums text-neutral-500 shrink-0">
           {evidence.length}
         </span>
       </div>
@@ -441,11 +440,11 @@ function CallSummary({
         </ol>
       </Card>
       <div className="space-y-1">
-        <p className="font-mono text-[11px] tracking-wider text-neutral-500">
+        <p className="font-mono text-[11px] tracking-wider text-neutral-500 break-all">
           call_id · {callId}
         </p>
         {summary.speechmatics_session_id && (
-          <p className="font-mono text-[11px] tracking-wider text-neutral-500">
+          <p className="font-mono text-[11px] tracking-wider text-neutral-500 break-all">
             speechmatics_session_id · {summary.speechmatics_session_id}
           </p>
         )}

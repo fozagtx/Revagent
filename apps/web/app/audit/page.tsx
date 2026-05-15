@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { FileSearch, ArrowRight, Download, FileUp, Inbox } from "lucide-react";
+import { FileSearch, ArrowRight, Download, FileUp, Inbox, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/pageHeader";
@@ -9,7 +9,8 @@ import { StatusBadge, type StatusTone } from "@/components/ui/statusBadge";
 import { Field, Input, Select } from "@/components/ui/field";
 import { EmptyState } from "@/components/ui/emptyState";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DEMO_FOUNDER_ID } from "@/lib/utils";
+import { authedFetch } from "@/lib/utils";
+import { useLocalState } from "@/lib/useLocalState";
 
 interface AuditRow {
   id: string;
@@ -21,10 +22,24 @@ interface AuditRow {
   created_at: string;
 }
 
+interface AuditDraft {
+  dealId: string;
+  outcome: "won" | "lost";
+}
+
+const INITIAL_DRAFT: AuditDraft = { dealId: "", outcome: "lost" };
+
 export default function AuditPage() {
   const [audits, setAudits] = useState<AuditRow[] | null>(null);
-  const [dealId, setDealId] = useState("");
-  const [outcome, setOutcome] = useState<"won" | "lost">("lost");
+  const [draft, setDraft, clearDraft] = useLocalState<AuditDraft>(
+    "audit:draft",
+    INITIAL_DRAFT,
+  );
+  const dealId = draft.dealId;
+  const outcome = draft.outcome;
+  const setDealId = (v: string) => setDraft((p) => ({ ...p, dealId: v }));
+  const setOutcome = (v: "won" | "lost") =>
+    setDraft((p) => ({ ...p, outcome: v }));
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -38,9 +53,7 @@ export default function AuditPage() {
     let alive = true;
     const fetchAudits = async () => {
       try {
-        const r = await fetch("/api/audit", {
-          headers: { "x-founder-id": DEMO_FOUNDER_ID },
-        });
+        const r = await authedFetch("/api/audit");
         if (r.ok && alive) {
           setAudits(((await r.json()) as { audits: AuditRow[] }).audits);
         } else if (alive && audits === null) {
@@ -76,13 +89,12 @@ export default function AuditPage() {
       fd.append("deal_id", dealId);
       fd.append("outcome", outcome);
       fd.append("transcript", file!);
-      const r = await fetch("/api/audit/manual", {
+      const r = await authedFetch("/api/audit/manual", {
         method: "POST",
         body: fd,
-        headers: { "x-founder-id": DEMO_FOUNDER_ID },
       });
       if (!r.ok) throw new Error((await r.text()) || `Submit failed (${r.status})`);
-      setDealId("");
+      clearDraft();
       setFileName(null);
       if (fileRef.current) fileRef.current.value = "";
     } catch (err) {
@@ -93,20 +105,36 @@ export default function AuditPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
       <PageHeader
         eyebrow="Featherless · async"
         title="Win-Loss Auditor"
         description="Drop a call transcript with an outcome label. The 4-stage Featherless pipeline extracts objections, JTBD patterns, win-loss classification, and verbatim buyer language. Final PDF digest is emailed when complete."
+        actions={
+          dealId || fileName ? (
+            <button
+              type="button"
+              onClick={() => {
+                clearDraft();
+                setFileName(null);
+                if (fileRef.current) fileRef.current.value = "";
+              }}
+              className="inline-flex h-10 items-center gap-1.5 rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-4 text-xs font-semibold tracking-ui text-neutral-600 transition hover:bg-blue-100/40 hover:text-navy"
+            >
+              <X className="h-3.5 w-3.5" aria-hidden="true" />
+              Clear draft
+            </button>
+          ) : null
+        }
       />
 
-      <Card variant="hero" className="rise-in stagger-1 p-6 md:p-8 bg-sky">
+      <Card variant="hero" className="rise-in stagger-1 p-5 sm:p-6 md:p-8 bg-sky">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-neu-card border border-[rgba(189,215,255,0.5)] text-blue-700">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-neu-card border border-[rgba(189,215,255,0.5)] text-blue-700">
             <FileUp className="h-5 w-5" aria-hidden="true" />
           </div>
-          <div>
-            <h2 className="font-serif text-xl text-navy">
+          <div className="min-w-0">
+            <h2 className="font-serif text-lg sm:text-xl text-navy">
               Submit a deal for analysis
             </h2>
             <p className="text-xs text-neutral-600 tracking-ui">

@@ -154,7 +154,7 @@ export function FileDrop({
         if (f) onFile(f);
       }}
       className={cn(
-        "relative cursor-pointer rounded-hero p-8 md:p-10 text-center",
+        "relative cursor-pointer rounded-hero p-6 sm:p-8 md:p-10 text-center",
         "border-2 border-dashed transition-all duration-charms ease-charms",
         over
           ? "border-blue-600 bg-blue-100/60"

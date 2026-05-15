@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { getDb, calls } from "@revagent/db";
 import type { SwitchChart } from "@revagent/shared";
-import { generateFollowUps } from "./jtbd-decoder";
+import { generateFollowUps } from "./jtbdDecoder";
 
 export async function finalizeCall(callId: string, founderId: string) {
   const db = getDb();

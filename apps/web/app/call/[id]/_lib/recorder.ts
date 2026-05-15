@@ -15,9 +15,11 @@ export async function startMicCapture(onChunk: (chunk: ArrayBuffer) => void): Pr
   });
   const audioCtx = new AudioContext({ sampleRate: TARGET_SAMPLE_RATE });
   const source = audioCtx.createMediaStreamSource(stream);
-  const bufferSize = Math.max(2048, Math.round(audioCtx.sampleRate * (CHUNK_DURATION_MS / 1000)));
-  // ScriptProcessorNode is deprecated but still the simplest cross-browser path.
-  // For production-grade audio, switch to AudioWorkletNode.
+  // createScriptProcessor requires a power of 2 in [256, 16384].
+  // 16000 Hz × 250 ms = 4000 samples → round up to 4096 (~256 ms).
+  const target = audioCtx.sampleRate * (CHUNK_DURATION_MS / 1000);
+  const pow2 = 2 ** Math.ceil(Math.log2(target));
+  const bufferSize = Math.min(16384, Math.max(256, pow2));
   const processor = audioCtx.createScriptProcessor(bufferSize, 1, 1);
 
   processor.onaudioprocess = (e) => {
