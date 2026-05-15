@@ -6,12 +6,16 @@
   color-scheme: light;
   --bg-sky: linear-gradient(rgb(189, 215, 255) 0%, rgb(255, 255, 255) 39.45%);
   --bg-cta: linear-gradient(rgb(0, 68, 185) 5.5%, rgb(0, 116, 236) 35%, rgb(78, 177, 255) 65%, rgb(173, 217, 255) 95%);
+  --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #155DFC;
 }
 
 html, body {
   background-color: #ffffff;
   color: #002259;
   letter-spacing: -0.5px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -23,7 +27,21 @@ body {
 
 * { box-sizing: border-box; }
 
-/* Decorative ambient orb you can layer behind hero sections */
+/* Focus visibility — required for keyboard accessibility */
+:focus { outline: none; }
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 12px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(21, 93, 252, 0.18);
+  color: #002259;
+}
+
+/* Decorative ambient orb */
 .orb {
   position: absolute;
   width: 360px;
@@ -34,7 +52,7 @@ body {
   z-index: 0;
 }
 
-/* Frosted-glass search input pattern */
+/* Frosted-glass surface */
 .frosted {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
@@ -58,5 +76,122 @@ body {
   background-image: var(--bg-cta);
   border: 1px solid rgba(255,255,255,0.2);
   color: #ffffff;
+  position: relative;
+  isolation: isolate;
 }
-.btn-cta:hover { filter: brightness(1.05); }
+.btn-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 50%);
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-cta:hover { filter: brightness(1.06); }
+.btn-cta:active { filter: brightness(0.96); transform: translateY(0.5px); }
+
+/* Frosted input — focus state */
+.frosted-input {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(189, 215, 255, 0.5);
+  transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.frosted-input:hover { border-color: rgba(121, 173, 248, 0.6); }
+.frosted-input:focus {
+  border-color: #155DFC;
+  box-shadow: 0 0 0 3px rgba(21, 93, 252, 0.16);
+  outline: none;
+}
+.frosted-input::placeholder { color: #8F9FB8; }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #EFF4F9 0%, #F7FAFE 50%, #EFF4F9 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  border-radius: 8px;
+}
+
+/* Entrance choreography */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.rise-in {
+  animation: riseIn 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.fade-in {
+  animation: fadeIn 240ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.pulse-dot {
+  animation: pulseDot 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.stagger-1 { animation-delay: 40ms; }
+.stagger-2 { animation-delay: 90ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 220ms; }
+
+/* Hover lift, used on interactive cards */
+.lift {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lift:hover {
+  transform: translateY(-2px);
+}
+.lift:active {
+  transform: translateY(0);
+}
+
+/* Scrollable transcript region */
+.scroll-shadow {
+  background:
+    linear-gradient(white 30%, rgba(255,255,255,0)) center top,
+    linear-gradient(rgba(255,255,255,0), white 70%) center bottom,
+    radial-gradient(farthest-side at 50% 0, rgba(0,34,89,0.08), rgba(0,0,0,0)) center top,
+    radial-gradient(farthest-side at 50% 100%, rgba(0,34,89,0.08), rgba(0,0,0,0)) center bottom;
+  background-repeat: no-repeat;
+  background-size: 100% 24px, 100% 24px, 100% 8px, 100% 8px;
+  background-attachment: local, local, scroll, scroll;
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .skeleton { animation: none; }
+}
+
+/* Hide scrollbar but keep functional */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,34,89,0.18) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(0,34,89,0.18);
+  border-radius: 3px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background-color: rgba(0,34,89,0.3); }
