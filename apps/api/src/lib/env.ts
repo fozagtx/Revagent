@@ -18,6 +18,9 @@ const EnvSchema = z.object({
   FEATHERLESS_MODEL_JTBD: z.string().default("meta-llama/Meta-Llama-3.1-8B-Instruct"),
   FEATHERLESS_MODEL_CLASSIFIER: z.string().default("mistralai/Mistral-7B-Instruct-v0.3"),
   FEATHERLESS_MODEL_VOICE: z.string().default("meta-llama/Meta-Llama-3.1-8B-Instruct"),
+  // Used when Gemini rate-limits the pitch council / JTBD decoder.
+  FEATHERLESS_MODEL_PITCH: z.string().default("Qwen/Qwen2.5-32B-Instruct"),
+  FEATHERLESS_MODEL_JTBD_FALLBACK: z.string().default("Qwen/Qwen2.5-32B-Instruct"),
 
   VULTR_S3_ENDPOINT: z.string().url(),
   VULTR_S3_REGION: z.string().default("ewr1"),

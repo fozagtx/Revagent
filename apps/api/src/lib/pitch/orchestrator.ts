@@ -48,8 +48,11 @@ export async function analyzeDeck(args: AnalyzeArgs): Promise<void> {
     .set({ numSlides: deck.slides.length })
     .where(eq(pitchAnalyses.id, args.analysisId));
 
-  // 3. Gemini multimodal 3-persona council.
-  const { analysis, requestId } = await runPitchCouncil(deck.slides);
+  // 3. Gemini multimodal 3-persona council (auto-falls-back to Featherless text-only on rate limit).
+  const { analysis, requestId, provider } = await runPitchCouncil(deck.slides);
+  if (provider === "featherless") {
+    console.info(`[pitch ${args.analysisId}] Gemini rate-limited — served from Featherless fallback`);
+  }
 
   // 4. Narrate strongest archetype.
   let narrationUrl: string | null = null;
