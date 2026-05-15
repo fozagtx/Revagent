@@ -1,7 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { ChevronLeft, Star } from "lucide-react";
+import { Card, CardTitle, CardDescription, CardEyebrow } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/pageHeader";
+import { StatusBadge } from "@/components/ui/statusBadge";
+import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/emptyState";
 import { DEMO_FOUNDER_ID } from "@/lib/utils";
 import type { ArchetypeRewrite, SlideCritique } from "@revagent/shared";
 
@@ -23,6 +29,12 @@ interface PitchRow {
   num_slides: number | null;
 }
 
+const ARCHETYPE_LABEL: Record<Archetype, string> = {
+  frame_control: "Frame Control",
+  grand_slam: "Grand Slam Offer",
+  desire_amp: "Desire Amp",
+};
+
 export default function PitchAnalysisPage() {
   const params = useParams<{ id: string }>();
   const [row, setRow] = useState<PitchRow | null>(null);
@@ -30,110 +42,257 @@ export default function PitchAnalysisPage() {
 
   useEffect(() => {
     let alive = true;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
     const fetchIt = async () => {
-      const r = await fetch(`/api/pitch/${params.id}`, { headers: { "x-founder-id": DEMO_FOUNDER_ID } });
-      if (r.ok && alive) {
-        const j = await r.json() as PitchRow;
-        setRow(j);
-        if (j.strongest_archetype) setTab(j.strongest_archetype);
+      try {
+        const r = await fetch(`/api/pitch/${params.id}`, {
+          headers: { "x-founder-id": DEMO_FOUNDER_ID },
+        });
+        if (r.ok && alive) {
+          const j = (await r.json()) as PitchRow;
+          setRow(j);
+          if (j.strongest_archetype) setTab(j.strongest_archetype);
+          // Stop polling on terminal states
+          if (
+            (j.status === "complete" || j.status === "failed") &&
+            timer !== null
+          ) {
+            clearInterval(timer);
+            timer = null;
+          }
+        }
+      } catch {
+        /* retry on next tick */
       }
     };
+
     void fetchIt();
-    const t = setInterval(fetchIt, 3000);
-    return () => { alive = false; clearInterval(t); };
+    timer = setInterval(fetchIt, 3000);
+    return () => {
+      alive = false;
+      if (timer) clearInterval(timer);
+    };
   }, [params.id]);
 
-  if (!row) return <p className="text-neutral-600">Loading…</p>;
+  if (!row) return <LoadingState />;
 
   const rewrites = row.rewrites?.[tab] ?? [];
+  const isProcessing = row.status !== "complete" && row.status !== "failed";
 
   return (
     <div className="space-y-8">
-      <header>
-        <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">{row.num_slides ?? "?"} slides · {row.status}</p>
-        <h1 className="mt-1 font-serif text-3xl text-navy">{row.deck_filename}</h1>
-      </header>
+      <Link
+        href="/pitch"
+        className="inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-neutral-600 hover:text-navy transition"
+      >
+        <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
+        All decks
+      </Link>
 
-      <div className="grid grid-cols-3 gap-5">
-        <ScoreCard label="Frame · Klaff" score={row.frame_score} />
-        <ScoreCard label="Offer · Hormozi" score={row.offer_score} />
-        <ScoreCard label="Desire · Schwartz" score={row.desire_score} />
-      </div>
+      <PageHeader
+        eyebrow={
+          <span className="inline-flex items-center gap-2">
+            {row.num_slides ?? "?"} slides
+            <span className="text-neutral-400">·</span>
+            {isProcessing ? (
+              <StatusBadge tone="pending" pulse>
+                {row.status}
+              </StatusBadge>
+            ) : row.status === "failed" ? (
+              <StatusBadge tone="error">failed</StatusBadge>
+            ) : (
+              <StatusBadge tone="success">complete</StatusBadge>
+            )}
+          </span>
+        }
+        title={row.deck_filename}
+      />
+
+      <section
+        className="grid grid-cols-1 gap-4 sm:grid-cols-3 rise-in stagger-1"
+        aria-label="Scores"
+      >
+        <ScoreCard label="Frame" sublabel="Klaff" score={row.frame_score} />
+        <ScoreCard label="Offer" sublabel="Hormozi" score={row.offer_score} />
+        <ScoreCard label="Desire" sublabel="Schwartz" score={row.desire_score} />
+      </section>
 
       {row.weakest_slide_idx !== null && (
-        <Card variant="white" className="border-l-4 border-l-blue-700">
-          <CardTitle>
-            <span className="font-mono text-xs uppercase tracking-wider text-blue-700">Weakest slide</span>
-            <span className="block mt-1">Slide #{row.weakest_slide_idx + 1}</span>
-          </CardTitle>
+        <Card
+          variant="white"
+          className="rise-in stagger-2 border-l-4 border-l-blue-700"
+        >
+          <CardEyebrow>Weakest slide</CardEyebrow>
+          <CardTitle className="mt-1">Slide #{row.weakest_slide_idx + 1}</CardTitle>
           <CardDescription className="mt-2 text-neutral-700">
-            {row.slide_critiques[row.weakest_slide_idx]?.notes ?? "—"}
+            {row.slide_critiques[row.weakest_slide_idx]?.notes ??
+              "Critique not yet available."}
           </CardDescription>
         </Card>
       )}
 
-      <div>
-        <div className="flex gap-2 mb-4">
-          {(["frame_control", "grand_slam", "desire_amp"] as Archetype[]).map((a) => (
-            <button
-              key={a}
-              onClick={() => setTab(a)}
-              className={`rounded-full px-4 py-2 text-sm tracking-ui font-semibold transition ${
-                tab === a
-                  ? "bg-blue-150 text-navy border border-blue-200"
-                  : "bg-neutral-50 text-navy border border-neutral-200 hover:bg-blue-100"
-              }`}
-            >
-              {labelFor(a)}{row.strongest_archetype === a && " ★"}
-            </button>
-          ))}
+      <section className="rise-in stagger-3" aria-label="Slide rewrites">
+        <div
+          role="tablist"
+          aria-label="Rewrite archetype"
+          className="mb-4 flex flex-wrap gap-2"
+        >
+          {(["frame_control", "grand_slam", "desire_amp"] as Archetype[]).map(
+            (a) => {
+              const active = tab === a;
+              const strongest = row.strongest_archetype === a;
+              return (
+                <button
+                  key={a}
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setTab(a)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold tracking-ui transition duration-charms ease-charms ${
+                    active
+                      ? "bg-blue-150 text-navy border border-blue-200"
+                      : "bg-white text-neutral-700 border border-[rgba(0,37,97,0.08)] hover:bg-blue-100/50 hover:text-navy"
+                  }`}
+                >
+                  {ARCHETYPE_LABEL[a]}
+                  {strongest && (
+                    <Star
+                      className="h-3.5 w-3.5 fill-blue-700 text-blue-700"
+                      aria-label="strongest"
+                    />
+                  )}
+                </button>
+              );
+            },
+          )}
         </div>
+
         <div className="space-y-3">
-          {rewrites.length === 0 && <p className="text-neutral-600 text-sm">Rewrites still processing…</p>}
+          {rewrites.length === 0 && isProcessing && (
+            <Card className="fade-in">
+              <SkeletonText lines={3} />
+            </Card>
+          )}
+          {rewrites.length === 0 && !isProcessing && (
+            <EmptyState
+              title="No rewrites for this archetype"
+              description="Switch to another archetype to see suggested rewrites."
+            />
+          )}
           {rewrites.map((r, i) => (
-            <Card key={i}>
-              <CardTitle>Slide {r.slide_idx + 1}</CardTitle>
-              <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
+            <Card key={i} className="rise-in" style={{ animationDelay: `${i * 60}ms` }}>
+              <div className="flex items-center justify-between gap-3">
+                <CardTitle as="h3">Slide {r.slide_idx + 1}</CardTitle>
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
-                  <p className="text-xs font-mono uppercase tracking-wider text-neutral-500 mb-1">Original</p>
-                  <p className="text-neutral-700">{r.original_text}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+                    Original
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-neutral-700">
+                    {r.original_text}
+                  </p>
                 </div>
-                <div>
-                  <p className="text-xs font-mono uppercase tracking-wider text-blue-700 mb-1">Rewritten</p>
-                  <p className="text-navy font-medium">{r.rewritten_text}</p>
+                <div className="border-l border-[rgba(189,215,255,0.5)] pl-4 sm:border-l">
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-blue-700">
+                    Rewritten
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-navy font-medium">
+                    {r.rewritten_text}
+                  </p>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-neutral-600 italic">{r.rationale}</p>
+              {r.rationale && (
+                <p className="mt-4 border-t border-[rgba(189,215,255,0.4)] pt-3 text-xs italic text-neutral-600 leading-relaxed">
+                  {r.rationale}
+                </p>
+              )}
             </Card>
           ))}
         </div>
-      </div>
+      </section>
 
       {row.narration_audio_url && (
-        <Card>
-          <CardTitle>30-second narrated pitch</CardTitle>
-          <audio className="mt-3 w-full" controls src={row.narration_audio_url} />
+        <Card className="rise-in">
+          <CardTitle as="h3">30-second narrated pitch</CardTitle>
+          <CardDescription className="mt-1">
+            AI-generated voiceover of the rewritten deck opening.
+          </CardDescription>
+          <audio
+            className="mt-4 w-full"
+            controls
+            preload="metadata"
+            src={row.narration_audio_url}
+          >
+            Your browser does not support audio playback.
+          </audio>
         </Card>
       )}
 
-      <p className="text-xs font-mono text-neutral-500">
-        gemini_request_id: {row.gemini_request_id ?? "—"}
-      </p>
+      {row.gemini_request_id && (
+        <p className="font-mono text-[11px] tracking-wider text-neutral-500">
+          gemini_request_id · {row.gemini_request_id}
+        </p>
+      )}
     </div>
   );
 }
 
-function ScoreCard({ label, score }: { label: string; score: number | null }) {
+function ScoreCard({
+  label,
+  sublabel,
+  score,
+}: {
+  label: string;
+  sublabel: string;
+  score: number | null;
+}) {
+  const tone =
+    score === null
+      ? "text-neutral-400"
+      : score >= 8
+        ? "text-success"
+        : score >= 5
+          ? "text-navy"
+          : "text-error";
   return (
     <Card>
-      <p className="font-mono text-[11px] uppercase tracking-wider text-blue-700">{label}</p>
-      <p className="mt-3 font-serif text-5xl text-navy tabular-nums leading-none">
-        {score ?? "—"}<span className="text-2xl text-neutral-500">/10</span>
-      </p>
+      <div className="flex items-baseline justify-between gap-2">
+        <CardEyebrow>{label}</CardEyebrow>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+          {sublabel}
+        </span>
+      </div>
+      {score === null ? (
+        <Skeleton className="mt-3 h-12 w-24" />
+      ) : (
+        <p className={`mt-3 font-serif text-5xl tabular-nums leading-none ${tone}`}>
+          {score}
+          <span className="text-2xl text-neutral-400">/10</span>
+        </p>
+      )}
     </Card>
   );
 }
 
-function labelFor(a: Archetype): string {
-  return a === "frame_control" ? "Frame Control" : a === "grand_slam" ? "Grand Slam Offer" : "Desire Amp";
+function LoadingState() {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-3">
+        <Skeleton className="h-3 w-32" />
+        <Skeleton className="h-9 w-72" />
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {[0, 1, 2].map((i) => (
+          <Card key={i}>
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="mt-3 h-12 w-24" />
+          </Card>
+        ))}
+      </div>
+      <Card>
+        <SkeletonText lines={4} />
+      </Card>
+    </div>
+  );
 }
