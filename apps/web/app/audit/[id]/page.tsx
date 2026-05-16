@@ -17,17 +17,17 @@ import type {
 
 interface AuditDetail {
   id: string;
-  deal_id: string;
+  dealId: string;
   outcome: "won" | "lost";
   classification: string | null;
-  classification_evidence: Array<{ claim: string; quote_or_pattern: string }> | null;
+  classificationEvidence: Array<{ claim: string; quote_or_pattern: string }> | null;
   objections: Objection[] | null;
-  jtbd_patterns: JtbdPatterns | null;
-  buyer_language: BuyerPhrase[] | null;
-  featherless_model_versions: FeatherlessModelVersions | null;
-  digest_pdf_url: string | null;
-  pipeline_checkpoint: string;
-  error_message: string | null;
+  jtbdPatterns: JtbdPatterns | null;
+  buyerLanguage: BuyerPhrase[] | null;
+  featherlessModelVersions: FeatherlessModelVersions | null;
+  digestPdfUrl: string | null;
+  pipelineCheckpoint: string;
+  errorMessage: string | null;
 }
 
 const SEVERITY_TONE: Record<Objection["severity"], StatusTone> = {
@@ -58,7 +58,7 @@ export default function AuditDetailPage() {
         if (r.ok && alive) {
           const j = (await r.json()) as AuditDetail;
           setRow(j);
-          if (TERMINAL_CHECKPOINTS.has(j.pipeline_checkpoint) && timer) {
+          if (TERMINAL_CHECKPOINTS.has(j.pipelineCheckpoint) && timer) {
             clearInterval(timer);
             timer = null;
           }
@@ -79,7 +79,7 @@ export default function AuditDetailPage() {
   if (!row) return <LoadingState />;
 
   const outcomeTone: StatusTone = row.outcome === "won" ? "success" : "error";
-  const isProcessing = !TERMINAL_CHECKPOINTS.has(row.pipeline_checkpoint);
+  const isProcessing = !TERMINAL_CHECKPOINTS.has(row.pipelineCheckpoint);
 
   return (
     <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
@@ -100,11 +100,11 @@ export default function AuditDetailPage() {
             <span className="text-neutral-400">·</span>
             {isProcessing ? (
               <StatusBadge tone="pending" pulse>
-                checkpoint {row.pipeline_checkpoint}
+                checkpoint {row.pipelineCheckpoint}
               </StatusBadge>
             ) : (
               <span className="font-mono text-neutral-500">
-                checkpoint {row.pipeline_checkpoint}
+                checkpoint {row.pipelineCheckpoint}
               </span>
             )}
             {row.classification && (
@@ -117,11 +117,11 @@ export default function AuditDetailPage() {
             )}
           </span>
         }
-        title={row.deal_id}
+        title={row.dealId}
         actions={
-          row.digest_pdf_url ? (
+          row.digestPdfUrl ? (
             <a
-              href={row.digest_pdf_url}
+              href={row.digestPdfUrl}
               target="_blank"
               rel="noreferrer"
               className="btn-cta inline-flex h-11 items-center gap-2 rounded-2xl px-5 text-sm font-semibold tracking-ui transition"
@@ -133,7 +133,7 @@ export default function AuditDetailPage() {
         }
       />
 
-      {row.error_message && (
+      {row.errorMessage && (
         <Card
           variant="white"
           role="alert"
@@ -144,7 +144,7 @@ export default function AuditDetailPage() {
             <CardTitle as="h3" className="text-error">
               Pipeline error
             </CardTitle>
-            <CardDescription className="mt-1">{row.error_message}</CardDescription>
+            <CardDescription className="mt-1">{row.errorMessage}</CardDescription>
           </div>
         </Card>
       )}
@@ -175,30 +175,30 @@ export default function AuditDetailPage() {
 
       <Section
         title="JTBD patterns"
-        empty={!row.jtbd_patterns}
+        empty={!row.jtbdPatterns}
         processing={isProcessing}
       >
-        {row.jtbd_patterns && (
+        {row.jtbdPatterns && (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <QuadrantList
               label="Push"
               dot="bg-red-500"
-              items={row.jtbd_patterns.push}
+              items={row.jtbdPatterns.push}
             />
             <QuadrantList
               label="Pull"
               dot="bg-success"
-              items={row.jtbd_patterns.pull}
+              items={row.jtbdPatterns.pull}
             />
             <QuadrantList
               label="Anxiety"
               dot="bg-amber-600"
-              items={row.jtbd_patterns.anxiety}
+              items={row.jtbdPatterns.anxiety}
             />
             <QuadrantList
               label="Habit"
               dot="bg-blue-500"
-              items={row.jtbd_patterns.habit}
+              items={row.jtbdPatterns.habit}
             />
           </div>
         )}
@@ -206,11 +206,11 @@ export default function AuditDetailPage() {
 
       <Section
         title="Classification evidence"
-        empty={!row.classification_evidence?.length}
+        empty={!row.classificationEvidence?.length}
         processing={isProcessing}
       >
         <ul className="space-y-3">
-          {row.classification_evidence?.map((e, i) => (
+          {row.classificationEvidence?.map((e, i) => (
             <li
               key={i}
               className="rise-in text-sm"
@@ -227,11 +227,11 @@ export default function AuditDetailPage() {
 
       <Section
         title="Buyer language (verbatim)"
-        empty={!row.buyer_language?.length}
+        empty={!row.buyerLanguage?.length}
         processing={isProcessing}
       >
         <ul className="space-y-3">
-          {row.buyer_language?.map((p, i) => (
+          {row.buyerLanguage?.map((p, i) => (
             <li
               key={i}
               className="rise-in text-sm"
@@ -248,13 +248,13 @@ export default function AuditDetailPage() {
         </ul>
       </Section>
 
-      {row.featherless_model_versions && (
+      {row.featherlessModelVersions && (
         <details className="rounded-xl border border-[rgba(189,215,255,0.5)] bg-white/40 px-4 py-3">
           <summary className="cursor-pointer text-xs font-mono uppercase tracking-wider text-neutral-500 hover:text-navy transition">
             Model versions
           </summary>
           <pre className="mt-3 max-w-full overflow-x-auto whitespace-pre-wrap break-all font-mono text-[11px] text-neutral-600">
-            {JSON.stringify(row.featherless_model_versions, null, 2)}
+            {JSON.stringify(row.featherlessModelVersions, null, 2)}
           </pre>
         </details>
       )}

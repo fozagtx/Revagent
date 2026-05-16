@@ -24,6 +24,7 @@ packages/db/drizzle/meta
 .claude-workspace/
 .cursor/
 .aider*
+.agents/
 CLAUDE.md
 progress.md
 plan.md

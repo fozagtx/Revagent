@@ -14,12 +14,12 @@ import { useLocalState } from "@/lib/useLocalState";
 
 interface AuditRow {
   id: string;
-  deal_id: string;
+  dealId: string;
   outcome: "won" | "lost";
   classification: string | null;
-  pipeline_checkpoint: string;
-  digest_pdf_url: string | null;
-  created_at: string;
+  pipelineCheckpoint: string;
+  digestPdfUrl: string | null;
+  createdAt: string;
 }
 
 interface AuditDraft {
@@ -278,13 +278,13 @@ function AuditRowCard({ audit }: { audit: AuditRow }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 flex-wrap">
           <p className="truncate font-semibold tracking-ui text-navy">
-            {audit.deal_id}
+            {audit.dealId}
           </p>
           <StatusBadge tone={tone}>{audit.outcome.toUpperCase()}</StatusBadge>
         </div>
         <p className="mt-1 text-xs text-neutral-600 flex items-center gap-2 flex-wrap">
           <span className="font-mono tracking-wider">
-            checkpoint · {audit.pipeline_checkpoint}
+            checkpoint · {audit.pipelineCheckpoint}
           </span>
           {audit.classification && (
             <>
@@ -294,7 +294,7 @@ function AuditRowCard({ audit }: { audit: AuditRow }) {
           )}
           <span className="text-neutral-400">·</span>
           <span className="font-mono tabular-nums">
-            {new Date(audit.created_at).toLocaleDateString(undefined, {
+            {new Date(audit.createdAt).toLocaleDateString(undefined, {
               month: "short",
               day: "numeric",
             })}
@@ -302,9 +302,9 @@ function AuditRowCard({ audit }: { audit: AuditRow }) {
         </p>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        {audit.digest_pdf_url && (
+        {audit.digestPdfUrl && (
           <a
-            href={audit.digest_pdf_url}
+            href={audit.digestPdfUrl}
             target="_blank"
             rel="noreferrer"
             className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[rgba(0,37,97,0.08)] bg-white px-3 text-xs font-semibold tracking-ui text-blue-700 transition hover:bg-blue-100/40"

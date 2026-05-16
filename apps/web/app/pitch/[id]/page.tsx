@@ -16,17 +16,17 @@ type Archetype = "frame_control" | "grand_slam" | "desire_amp";
 interface PitchRow {
   id: string;
   status: string;
-  frame_score: number | null;
-  offer_score: number | null;
-  desire_score: number | null;
-  weakest_slide_idx: number | null;
-  slide_critiques: SlideCritique[];
+  frameScore: number | null;
+  offerScore: number | null;
+  desireScore: number | null;
+  weakestSlideIdx: number | null;
+  slideCritiques: SlideCritique[];
   rewrites: Record<Archetype, ArchetypeRewrite[]> | null;
-  strongest_archetype: Archetype | null;
-  narration_audio_url: string | null;
-  gemini_request_id: string | null;
-  deck_filename: string;
-  num_slides: number | null;
+  strongestArchetype: Archetype | null;
+  narrationAudioUrl: string | null;
+  geminiRequestId: string | null;
+  deckFilename: string;
+  numSlides: number | null;
 }
 
 const ARCHETYPE_LABEL: Record<Archetype, string> = {
@@ -50,7 +50,7 @@ export default function PitchAnalysisPage() {
         if (r.ok && alive) {
           const j = (await r.json()) as PitchRow;
           setRow(j);
-          if (j.strongest_archetype) setTab(j.strongest_archetype);
+          if (j.strongestArchetype) setTab(j.strongestArchetype);
           // Stop polling on terminal states
           if (
             (j.status === "complete" || j.status === "failed") &&
@@ -91,7 +91,7 @@ export default function PitchAnalysisPage() {
       <PageHeader
         eyebrow={
           <span className="inline-flex items-center gap-2">
-            {row.num_slides ?? "?"} slides
+            {row.numSlides ?? "?"} slides
             <span className="text-neutral-400">·</span>
             {isProcessing ? (
               <StatusBadge tone="pending" pulse>
@@ -104,7 +104,7 @@ export default function PitchAnalysisPage() {
             )}
           </span>
         }
-        title={row.deck_filename}
+        title={row.deckFilename}
       />
 
       <section
@@ -116,33 +116,33 @@ export default function PitchAnalysisPage() {
           persona="Oren Klaff"
           initials="OK"
           tint="from-blue-600 to-blue-800"
-          score={row.frame_score}
+          score={row.frameScore}
         />
         <ScoreCard
           label="Offer"
           persona="Alex Hormozi"
           initials="AH"
           tint="from-amber-500 to-amber-700"
-          score={row.offer_score}
+          score={row.offerScore}
         />
         <ScoreCard
           label="Desire"
           persona="Eugene Schwartz"
           initials="ES"
           tint="from-emerald-500 to-emerald-700"
-          score={row.desire_score}
+          score={row.desireScore}
         />
       </section>
 
-      {row.weakest_slide_idx != null && (
+      {row.weakestSlideIdx != null && (
         <Card
           variant="white"
           className="rise-in stagger-2 border-l-4 border-l-blue-700"
         >
           <CardEyebrow>Weakest slide</CardEyebrow>
-          <CardTitle className="mt-1">Slide #{row.weakest_slide_idx + 1}</CardTitle>
+          <CardTitle className="mt-1">Slide #{row.weakestSlideIdx + 1}</CardTitle>
           <CardDescription className="mt-2 text-neutral-700">
-            {row.slide_critiques?.[row.weakest_slide_idx]?.notes ??
+            {row.slideCritiques?.[row.weakestSlideIdx]?.notes ??
               "Critique not yet available."}
           </CardDescription>
         </Card>
@@ -157,7 +157,7 @@ export default function PitchAnalysisPage() {
           {(["frame_control", "grand_slam", "desire_amp"] as Archetype[]).map(
             (a) => {
               const active = tab === a;
-              const strongest = row.strongest_archetype === a;
+              const strongest = row.strongestArchetype === a;
               return (
                 <button
                   key={a}
@@ -228,7 +228,7 @@ export default function PitchAnalysisPage() {
         </div>
       </section>
 
-      {row.narration_audio_url && (
+      {row.narrationAudioUrl && (
         <Card className="rise-in">
           <CardTitle as="h3">30-second narrated pitch</CardTitle>
           <CardDescription className="mt-1">
@@ -238,16 +238,16 @@ export default function PitchAnalysisPage() {
             className="mt-4 w-full"
             controls
             preload="metadata"
-            src={row.narration_audio_url}
+            src={row.narrationAudioUrl}
           >
             Your browser does not support audio playback.
           </audio>
         </Card>
       )}
 
-      {row.gemini_request_id && (
+      {row.geminiRequestId && (
         <p className="font-mono text-[11px] tracking-wider text-neutral-500 break-all">
-          gemini_request_id · {row.gemini_request_id}
+          gemini_request_id · {row.geminiRequestId}
         </p>
       )}
     </div>
