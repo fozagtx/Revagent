@@ -111,9 +111,27 @@ export default function PitchAnalysisPage() {
         className="grid grid-cols-1 gap-4 sm:grid-cols-3 rise-in stagger-1"
         aria-label="Scores"
       >
-        <ScoreCard label="Frame" sublabel="Klaff" score={row.frame_score} />
-        <ScoreCard label="Offer" sublabel="Hormozi" score={row.offer_score} />
-        <ScoreCard label="Desire" sublabel="Schwartz" score={row.desire_score} />
+        <ScoreCard
+          label="Frame"
+          persona="Oren Klaff"
+          initials="OK"
+          tint="from-blue-600 to-blue-800"
+          score={row.frame_score}
+        />
+        <ScoreCard
+          label="Offer"
+          persona="Alex Hormozi"
+          initials="AH"
+          tint="from-amber-500 to-amber-700"
+          score={row.offer_score}
+        />
+        <ScoreCard
+          label="Desire"
+          persona="Eugene Schwartz"
+          initials="ES"
+          tint="from-emerald-500 to-emerald-700"
+          score={row.desire_score}
+        />
       </section>
 
       {row.weakest_slide_idx != null && (
@@ -238,11 +256,15 @@ export default function PitchAnalysisPage() {
 
 function ScoreCard({
   label,
-  sublabel,
+  persona,
+  initials,
+  tint,
   score,
 }: {
   label: string;
-  sublabel: string;
+  persona: string;
+  initials: string;
+  tint: string;
   score: number | null;
 }) {
   const tone =
@@ -255,16 +277,26 @@ function ScoreCard({
           : "text-error";
   return (
     <Card>
-      <div className="flex items-baseline justify-between gap-2">
-        <CardEyebrow>{label}</CardEyebrow>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-          {sublabel}
-        </span>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span
+            aria-hidden="true"
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${tint} text-white text-[12px] font-bold tracking-wider shadow-sm ring-2 ring-white`}
+          >
+            {initials}
+          </span>
+          <div className="min-w-0">
+            <CardEyebrow>{label}</CardEyebrow>
+            <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 truncate">
+              {persona}
+            </p>
+          </div>
+        </div>
       </div>
       {score === null ? (
-        <Skeleton className="mt-3 h-12 w-24" />
+        <Skeleton className="mt-4 h-12 w-24" />
       ) : (
-        <p className={`mt-3 font-serif text-4xl sm:text-5xl tabular-nums leading-none ${tone}`}>
+        <p className={`mt-4 font-serif text-4xl sm:text-5xl tabular-nums leading-none ${tone}`}>
           {score}
           <span className="ml-0.5 text-xl sm:text-2xl font-semibold text-navy/70">
             /10
