@@ -226,7 +226,7 @@ export default function LiveCall() {
         eyebrow={
           <span className="inline-flex items-center gap-2 flex-wrap">
             {connected ? (
-              <StatusBadge tone="success" pulse>
+              <StatusBadge tone="error" pulse>
                 Live
               </StatusBadge>
             ) : (

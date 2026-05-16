@@ -287,7 +287,7 @@ function ScoreCard({
           </span>
           <div className="min-w-0">
             <CardEyebrow>{label}</CardEyebrow>
-            <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 truncate">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-navy font-bold truncate">
               {persona}
             </p>
           </div>
