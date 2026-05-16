@@ -40,7 +40,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="#how-it-works"
-                  className="inline-flex h-12 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-6 text-[15px] font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
+                  className="btn-glass inline-flex h-12 items-center rounded-2xl px-6 text-[15px] font-semibold tracking-ui"
                 >
                   See how it works
                 </Link>
@@ -282,7 +282,7 @@ export default function Home() {
                 href="https://github.com/fozagtx/Revagent"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-12 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-6 text-[15px] font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
+                className="btn-glass inline-flex h-12 items-center rounded-2xl px-6 text-[15px] font-semibold tracking-ui"
               >
                 Star on GitHub
               </Link>
