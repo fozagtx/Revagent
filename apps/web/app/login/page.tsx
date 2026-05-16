@@ -33,7 +33,9 @@ function fireConfetti() {
 
 function LoginInner() {
   const search = useSearchParams();
-  const next = search?.get("next") || "/";
+  // After sign-in, default to the pitch workspace - the main "do something" view.
+  // Honors ?next= if middleware bounced the user from a specific protected route.
+  const next = search?.get("next") || "/pitch";
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
