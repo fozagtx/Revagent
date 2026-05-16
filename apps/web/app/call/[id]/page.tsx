@@ -454,29 +454,64 @@ function CallSummary({
           ))}
         </ol>
       </Card>
-      <Card variant="white" className="space-y-3">
-        <CardEyebrow>References</CardEyebrow>
-        <div className="space-y-2">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-              call_id
-            </p>
-            <p className="mt-0.5 font-mono text-sm font-bold text-navy break-all select-all">
-              {callId}
-            </p>
-          </div>
+      <details className="group">
+        <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-semibold tracking-ui text-neutral-500 hover:text-navy transition outline-none">
+          <span>Technical details</span>
+          <svg
+            className="h-3 w-3 transition-transform duration-charms ease-charms group-open:rotate-90"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path d="m9 5 7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </summary>
+        <Card variant="white" className="mt-3 space-y-3">
+          <p className="text-xs text-neutral-600">
+            Identifiers tying this call to the providers behind it — useful for
+            debugging or for sponsor verification. You don&apos;t need these to use the product.
+          </p>
+          <RefRow label="Call ID" value={callId} />
           {summary.speechmatics_session_id && (
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-                speechmatics_session_id
-              </p>
-              <p className="mt-0.5 font-mono text-sm font-bold text-navy break-all select-all">
-                {summary.speechmatics_session_id}
-              </p>
-            </div>
+            <RefRow
+              label="Speechmatics session"
+              value={summary.speechmatics_session_id}
+            />
           )}
-        </div>
-      </Card>
+        </Card>
+      </details>
+    </div>
+  );
+}
+
+function RefRow({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard blocked — ignore */
+    }
+  }
+  return (
+    <div>
+      <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+        {label}
+      </p>
+      <div className="mt-0.5 flex items-center gap-2">
+        <code className="flex-1 font-mono text-sm font-bold text-navy break-all select-all">
+          {value}
+        </code>
+        <button
+          type="button"
+          onClick={copy}
+          className="shrink-0 inline-flex h-7 items-center rounded-md border border-[rgba(0,37,97,0.08)] bg-white px-2 text-[11px] font-semibold tracking-ui text-blue-700 hover:bg-blue-100/40 transition"
+        >
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
     </div>
   );
 }
