@@ -210,7 +210,7 @@ export default function LiveCall() {
     }
   }
 
-  if (final) return <CallSummary summary={final} callId={params.id} />;
+  if (final) return <CallSummary summary={final} callId={params.id} transcript={transcript} />;
 
   return (
     <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-7">
@@ -422,9 +422,11 @@ function QuadrantCard({ q, evidence }: { q: Quadrant; evidence: SwitchEvidence[]
 function CallSummary({
   summary,
   callId,
+  transcript,
 }: {
   summary: FinalSummary;
   callId: string;
+  transcript: TranscriptUtterance[];
 }) {
   return (
     <div className="space-y-8">
@@ -454,6 +456,7 @@ function CallSummary({
           ))}
         </ol>
       </Card>
+      <TranscriptCard transcript={transcript} callId={callId} />
       <details className="group">
         <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-md px-1 -mx-1 text-xs font-semibold tracking-ui text-neutral-500 hover:text-navy transition-colors duration-charms ease-charms outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
           <span>Technical details</span>
@@ -515,5 +518,104 @@ function RefRow({ label, value }: { label: string; value: string }) {
         </button>
       </div>
     </div>
+  );
+}
+
+function formatTranscript(transcript: TranscriptUtterance[]): string {
+  return transcript
+    .map((u) => {
+      const mm = Math.floor(u.ts_start / 60).toString().padStart(2, "0");
+      const ss = Math.floor(u.ts_start % 60).toString().padStart(2, "0");
+      return `[${mm}:${ss}] [${u.speaker}] ${u.text}`;
+    })
+    .join("\n");
+}
+
+function TranscriptCard({
+  transcript,
+  callId,
+}: {
+  transcript: TranscriptUtterance[];
+  callId: string;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  if (transcript.length === 0) {
+    return (
+      <Card className="rise-in">
+        <CardTitle as="h3">Transcript</CardTitle>
+        <p className="mt-2 text-sm text-neutral-600">
+          No utterances were captured during this call.
+        </p>
+      </Card>
+    );
+  }
+
+  async function copyAll() {
+    try {
+      await navigator.clipboard.writeText(formatTranscript(transcript));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard blocked */
+    }
+  }
+
+  function download() {
+    const blob = new Blob([formatTranscript(transcript)], {
+      type: "text/plain;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `revagent-call-${callId.slice(0, 8)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <Card className="rise-in">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <CardTitle as="h3">Transcript</CardTitle>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-navy/70">
+            {transcript.length} utterance{transcript.length === 1 ? "" : "s"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={copyAll}
+            aria-label="Copy full transcript to clipboard"
+            className="inline-flex h-9 items-center rounded-xl border border-[rgba(0,37,97,0.08)] bg-white px-3 text-xs font-semibold tracking-ui text-blue-700 hover:bg-blue-100/40 transition-colors duration-charms ease-charms outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            {copied ? "Copied" : "Copy"}
+          </button>
+          <button
+            type="button"
+            onClick={download}
+            aria-label="Download transcript as .txt"
+            className="inline-flex h-9 items-center rounded-xl border border-[rgba(0,37,97,0.08)] bg-white px-3 text-xs font-semibold tracking-ui text-blue-700 hover:bg-blue-100/40 transition-colors duration-charms ease-charms outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Download .txt
+          </button>
+        </div>
+      </div>
+      <div
+        className="mt-4 max-h-72 overflow-y-auto rounded-xl bg-white/70 p-3 font-mono text-sm leading-relaxed text-navy scrollbar-thin"
+        aria-label="Call transcript"
+      >
+        {transcript.map((u, i) => (
+          <p key={i} className="mt-1 first:mt-0">
+            <span className="font-bold text-blue-700">
+              [{u.speaker}]
+            </span>{" "}
+            <span>{u.text}</span>
+          </p>
+        ))}
+      </div>
+    </Card>
   );
 }
