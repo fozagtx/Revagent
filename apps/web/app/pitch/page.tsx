@@ -133,16 +133,16 @@ export default function PitchPage() {
       return "Both Gemini and Featherless are rate-limited right now. Wait a minute and retry.";
     }
     if (msg.includes("featherless fallback returned invalid shape") || msg.includes("featherless fallback returned non-json")) {
-      return "Gemini was rate-limited and the Featherless fallback returned an unusable response. Retry — usually transient.";
+      return "Gemini was rate-limited and the Featherless fallback returned an unusable response. Retry - usually transient.";
     }
     if (msg.includes("429") || msg.includes("quota") || msg.includes("rate")) {
-      return "Provider is rate-limited. Retry in a few seconds — the system auto-falls-back to Featherless on the next attempt.";
+      return "Provider is rate-limited. Retry in a few seconds - the system auto-falls-back to Featherless on the next attempt.";
     }
     if (msg.includes("no slides extracted")) {
       return "Couldn't read any slides from this file. It may be corrupted or empty.";
     }
     if (msg.includes("invalid shape") || msg.includes("non-json")) {
-      return "LLM returned a malformed analysis. Retry — this is usually transient.";
+      return "LLM returned a malformed analysis. Retry - this is usually transient.";
     }
     const first = raw.split("\n")[0]?.trim() ?? raw;
     return first.length > 220 ? first.slice(0, 220) + "…" : first;
@@ -158,11 +158,11 @@ export default function PitchPage() {
   const busy = status === "uploading" || status === "processing";
 
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
       <PageHeader
         eyebrow="Gemini · multimodal"
         title="Pitch Surgeon"
-        description="Drop a .pptx or .pdf deck. A 3-persona council scores Frame, Offer, and Desire — then rewrites the weakest slide in three archetypes with a 30-second narrated pitch."
+        description="Drop a .pptx or .pdf deck. A 3-persona council scores Frame, Offer, and Desire - then rewrites the weakest slide in three archetypes with a 30-second narrated pitch."
         actions={
           hasSession && !busy ? (
             <button

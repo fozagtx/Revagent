@@ -82,7 +82,7 @@ export default function AuditDetailPage() {
   const isProcessing = !TERMINAL_CHECKPOINTS.has(row.pipeline_checkpoint);
 
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
       <Link
         href="/audit"
         className="inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-neutral-600 hover:text-navy transition"
@@ -166,7 +166,7 @@ export default function AuditDetailPage() {
               </StatusBadge>
               <div className="min-w-0">
                 <p className="text-navy leading-snug">{o.objection}</p>
-                <p className="mt-0.5 text-xs text-neutral-500">— {o.raised_by}</p>
+                <p className="mt-0.5 text-xs text-neutral-500">- {o.raised_by}</p>
               </div>
             </li>
           ))}
@@ -333,7 +333,7 @@ function QuadrantList({
 
 function LoadingState() {
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
       <Skeleton className="h-3 w-24" />
       <div className="space-y-3">
         <Skeleton className="h-4 w-48" />

@@ -77,7 +77,7 @@ function LoginInner() {
   }
 
   return (
-    <div className="container-page pt-28 pb-12 md:pt-32 md:pb-16 max-w-md space-y-7">
+    <div className="container-page pt-10 pb-12 md:pt-14 md:pb-16 max-w-md space-y-7">
       <PageHeader
         title="Welcome"
         description="Tell us your name to get started. We'll spin up a workspace just for you."

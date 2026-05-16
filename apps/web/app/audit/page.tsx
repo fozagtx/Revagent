@@ -105,7 +105,7 @@ export default function AuditPage() {
   }
 
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
       <PageHeader
         eyebrow="Featherless · async"
         title="Win-Loss Auditor"
@@ -160,7 +160,7 @@ export default function AuditPage() {
             />
             {!fieldError.deal && (
               <p className="mt-1.5 text-xs font-bold text-navy tracking-ui">
-                Any string you&apos;ll recognize — company name, CRM id, or a slug. e.g. acme-q3-renewal.
+                Any string you&apos;ll recognize - company name, CRM id, or a slug. e.g. acme-q3-renewal.
               </p>
             )}
           </Field>

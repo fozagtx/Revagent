@@ -109,7 +109,7 @@ export default function LiveCall() {
         const r = await authedFetch("/api/auth/ws-token");
         if (r.ok) token = ((await r.json()) as { token: string }).token;
       } catch {
-        /* fall through — server will reject and we'll show an error */
+        /* fall through - server will reject and we'll show an error */
       }
 
       const apiBase =
@@ -213,7 +213,7 @@ export default function LiveCall() {
   if (final) return <CallSummary summary={final} callId={params.id} />;
 
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-7">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-7">
       <Link
         href="/call"
         className="inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-neutral-600 hover:text-navy transition"
@@ -468,7 +468,7 @@ function CallSummary({
         </summary>
         <Card variant="white" className="mt-3 space-y-3">
           <p className="text-xs text-neutral-600">
-            Identifiers tying this call to the providers behind it — useful for
+            Identifiers tying this call to the providers behind it - useful for
             debugging or for sponsor verification. You don&apos;t need these to use the product.
           </p>
           <RefRow label="Call ID" value={callId} />
@@ -492,7 +492,7 @@ function RefRow({ label, value }: { label: string; value: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      /* clipboard blocked — ignore */
+      /* clipboard blocked - ignore */
     }
   }
   return (

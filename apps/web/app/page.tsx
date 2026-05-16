@@ -1,15 +1,15 @@
 import Link from "next/link";
 import {
-  Presentation,
-  Mic,
-  FileSearch,
-  ArrowRight,
-  CheckCircle2,
-  XCircle,
-  Sparkles,
-  Zap,
-  Lock,
-} from "lucide-react";
+  PresentationChartBarIcon,
+  MicrophoneIcon,
+  MagnifyingGlassIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  SparklesIcon,
+  BoltIcon,
+  LockClosedIcon,
+} from "@heroicons/react/24/outline";
 import { Card, CardEyebrow } from "@/components/ui/card";
 
 export default function Home() {
@@ -17,29 +17,26 @@ export default function Home() {
     <>
       {/* HERO */}
       <section className="hero-band">
-        <div className="container-page pt-28 pb-12 sm:pt-32 sm:pb-16 md:pt-36 md:pb-20 rise-in">
+        <div className="container-page pt-8 pb-14 sm:pt-12 sm:pb-16 md:pt-14 md:pb-20 rise-in">
           <div className="grid gap-10 md:grid-cols-[1.2fr,1fr] md:items-center">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-700/20 bg-white/70 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-blue-700 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-success" /> Live · 3 AI agents
-              </span>
-              <h1 className="mt-4 font-serif text-[36px] sm:text-[48px] md:text-[60px] leading-[1.02] text-navy tracking-tight max-w-3xl break-words">
+              <h1 className="font-serif text-[44px] sm:text-[60px] md:text-[76px] leading-[1.02] text-navy tracking-tight max-w-3xl break-words">
                 Win more deals.
                 <span className="block text-blue-700">Stop guessing why you lost.</span>
               </h1>
-              <p className="mt-5 max-w-xl text-[16px] md:text-[17px] leading-relaxed text-neutral-700">
+              <p className="mt-6 max-w-xl text-[17px] md:text-[19px] leading-relaxed text-navy/80">
                 RevAgent is three AI agents that fix the parts of selling that
                 kill early-stage founders: weak pitch decks, rambling discovery
                 calls, and lost deals you never debrief. Drop in a deck or a
-                transcript — get back specifics you can ship today.
+                transcript, get back specifics you can ship today.
               </p>
-              <div className="mt-7 flex flex-wrap items-center gap-3">
+              <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
                   href="/login?next=/pitch"
                   className="btn-cta inline-flex h-12 items-center gap-2 rounded-2xl px-6 text-[15px] font-semibold tracking-ui transition duration-charms ease-charms"
                 >
-                  Start free — no card
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  Start free - no card
+                  <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
                 </Link>
                 <Link
                   href="#how-it-works"
@@ -50,7 +47,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Hero portrait — founder who closed a deal, with overlay testimonial */}
+            {/* Hero portrait - founder who closed a deal, with overlay testimonial */}
             <div className="relative mx-auto w-full max-w-md md:max-w-none">
               <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-blue-100 shadow-2xl ring-1 ring-[rgba(189,215,255,0.6)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -62,7 +59,7 @@ export default function Home() {
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/85 to-transparent p-5 sm:p-6">
                   <p className="font-serif text-lg sm:text-xl text-white leading-snug">
-                    &ldquo;Closed our biggest deal of the year — three weeks after a pitch rewrite.&rdquo;
+                    &ldquo;Closed our biggest deal of the year - three weeks after a pitch rewrite.&rdquo;
                   </p>
                   <p className="mt-2 font-mono text-[11px] uppercase tracking-wider text-white/80">
                     Maya, founder · seed-stage SaaS
@@ -83,15 +80,15 @@ export default function Home() {
             className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[13px] font-medium text-navy/80"
           >
             <li className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+              <CheckCircleIcon className="h-4 w-4 text-success" aria-hidden="true" />
               60-second analysis
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+              <CheckCircleIcon className="h-4 w-4 text-success" aria-hidden="true" />
               No CRM setup
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+              <CheckCircleIcon className="h-4 w-4 text-success" aria-hidden="true" />
               Open-source · MIT
             </li>
           </ul>
@@ -101,8 +98,8 @@ export default function Home() {
       <div className="container-page py-14 md:py-20 space-y-20 md:space-y-28">
         {/* TRUST BAR */}
         <section className="rise-in">
-          <p className="text-center font-mono text-[11px] uppercase tracking-wider text-neutral-500">
-            Built on the same stack as the agents winning AI Olympics 2026
+          <p className="text-center font-mono text-[11px] uppercase tracking-wider font-bold text-navy/70">
+            Powered by
           </p>
           <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
             <BrandChip label="Gemini" logo={<GeminiMark />} />
@@ -122,7 +119,7 @@ export default function Home() {
               You&apos;re leaking deals at three obvious points.
             </h2>
             <p className="mt-3 text-[15px] text-neutral-700 leading-relaxed">
-              Founders lose six-figure deals not because the product is wrong —
+              Founders lose six-figure deals not because the product is wrong -
               but because nobody told them their deck buries the offer, their
               discovery calls miss the buyer&apos;s real job, and their losses
               never get debriefed. Three preventable failures, one fix.
@@ -130,17 +127,17 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <PainPoint
-              icon={<Presentation />}
+              icon={<PresentationChartBarIcon />}
               title="Your deck buries the offer"
-              body="A 3-persona review (Klaff, Hormozi, Schwartz) scores Frame, Offer, Desire and rewrites the weakest slide in 3 archetypes — with a 30-second narrated pitch."
+              body="A 3-persona review (Klaff, Hormozi, Schwartz) scores Frame, Offer, Desire and rewrites the weakest slide in 3 archetypes - with a 30-second narrated pitch."
             />
             <PainPoint
-              icon={<Mic />}
+              icon={<MicrophoneIcon />}
               title="Your discovery calls drift"
-              body="A live JTBD switch chart populates while you talk — Push · Pull · Anxiety · Habit — and nudges you mid-call when a quadrant stays empty."
+              body="A live JTBD switch chart populates while you talk - Push · Pull · Anxiety · Habit - and nudges you mid-call when a quadrant stays empty."
             />
             <PainPoint
-              icon={<FileSearch />}
+              icon={<MagnifyingGlassIcon />}
               title="Your losses go un-debriefed"
               body="Drop a transcript + win/loss tag. Four async pipelines extract objections, JTBD patterns, classification, and verbatim buyer language as a PDF digest."
             />
@@ -158,31 +155,31 @@ export default function Home() {
             </h2>
             <p className="mt-3 text-[15px] text-neutral-700 leading-relaxed">
               Each agent does one thing well. No CRM hookup, no onboarding
-              call — sign in with your name, upload, get an answer in under 90
+              call - sign in with your name, upload, get an answer in under 90
               seconds.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <AgentCard
-              icon={<Presentation />}
+              icon={<PresentationChartBarIcon />}
               name="Pitch Surgeon"
               sponsor="Gemini · multimodal"
-              desc="Drop a .pptx or .pdf. 3-persona council scores Frame, Offer, Desire — then rewrites the weakest slide in 3 archetypes with a 30-second narrated pitch."
+              desc="Drop a .pptx or .pdf. 3-persona council scores Frame, Offer, Desire - then rewrites the weakest slide in 3 archetypes with a 30-second narrated pitch."
               href="/login?next=/pitch"
               stat="$0.04 / deck"
               delay="stagger-1"
             />
             <AgentCard
-              icon={<Mic />}
+              icon={<MicrophoneIcon />}
               name="Discovery Co-Pilot"
               sponsor="Speechmatics · real-time"
-              desc="Live JTBD switch chart populates while you talk. Push · Pull · Anxiety · Habit — plus mid-call nudges if a quadrant stays empty."
+              desc="Live JTBD switch chart populates while you talk. Push · Pull · Anxiety · Habit - plus mid-call nudges if a quadrant stays empty."
               href="/login?next=/call"
               stat="< 2s latency"
               delay="stagger-2"
             />
             <AgentCard
-              icon={<FileSearch />}
+              icon={<MagnifyingGlassIcon />}
               name="Win-Loss Auditor"
               sponsor="Featherless · async"
               desc="4-stage async pipeline: objections, JTBD patterns, classification, verbatim buyer language. Emailed as a PDF digest when complete."
@@ -205,19 +202,19 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Differentiator
-              icon={<Zap />}
+              icon={<BoltIcon />}
               title="Built around your workflow"
-              body="Three purpose-built pipelines, not a chatbot. Each agent has a real domain model — slide critique schema, JTBD quadrants, win-loss evidence chains."
+              body="Three purpose-built pipelines, not a chatbot. Each agent has a real domain model - slide critique schema, JTBD quadrants, win-loss evidence chains."
             />
             <Differentiator
-              icon={<Sparkles />}
+              icon={<SparklesIcon />}
               title="Structured outputs, not prose"
-              body="Numeric scores, ranked rewrites, verbatim quotes with timestamps. Drop the results into Notion, your CRM, or a Slack message — no copy-edit required."
+              body="Numeric scores, ranked rewrites, verbatim quotes with timestamps. Drop the results into Notion, your CRM, or a Slack message - no copy-edit required."
             />
             <Differentiator
-              icon={<Lock />}
+              icon={<LockClosedIcon />}
               title="Your data, your bucket"
-              body="Decks, transcripts, and digests live in your Vultr Object Storage. We don&apos;t train on your inputs. MIT-licensed code — fork it, self-host it."
+              body="Decks, transcripts, and digests live in your Vultr Object Storage. We don&apos;t train on your inputs. MIT-licensed code - fork it, self-host it."
             />
           </div>
         </section>
@@ -235,11 +232,11 @@ export default function Home() {
           <ul className="divide-y divide-[rgba(189,215,255,0.5)] border-y border-[rgba(189,215,255,0.5)]">
             <Faq
               q="What does it cost?"
-              a="Free during beta — no card on file. Backed by free-tier Gemini and Featherless quotas plus a small Vultr VM. We&apos;ll switch to paid plans once we hit real usage."
+              a="Free during beta - no card on file. Backed by free-tier Gemini and Featherless quotas plus a small Vultr VM. We&apos;ll switch to paid plans once we hit real usage."
             />
             <Faq
               q="Do I need to integrate my CRM?"
-              a="No. Drop in a deck or paste a call transcript. No HubSpot, no Salesforce, no Zapier glue. The auditor accepts a deal_id you choose (free-form text — match to your CRM later if you want)."
+              a="No. Drop in a deck or paste a call transcript. No HubSpot, no Salesforce, no Zapier glue. The auditor accepts a deal_id you choose (free-form text - match to your CRM later if you want)."
             />
             <Faq
               q="Where does my data go?"
@@ -255,7 +252,7 @@ export default function Home() {
             />
             <Faq
               q="What if Gemini fails?"
-              a="Each pipeline reports the exact failure cause (quota, parse error, missing libreoffice on host). You're never stuck guessing — the UI prints the real error."
+              a="Each pipeline reports the exact failure cause (quota, parse error, missing libreoffice on host). You're never stuck guessing - the UI prints the real error."
             />
           </ul>
         </section>
@@ -267,7 +264,7 @@ export default function Home() {
               Stop guessing
             </p>
             <h2 className="mt-2 font-serif text-3xl md:text-5xl text-navy leading-tight max-w-2xl mx-auto">
-              See your deck through your buyer&apos;s eyes — in 60 seconds.
+              See your deck through your buyer&apos;s eyes - in 60 seconds.
             </h2>
             <p className="mt-3 text-[15px] text-neutral-700 max-w-xl mx-auto">
               Type your name. Drop a deck. Get the scores, the rewrite, and the
@@ -279,7 +276,7 @@ export default function Home() {
                 className="btn-cta inline-flex h-12 items-center gap-2 rounded-2xl px-7 text-[15px] font-semibold tracking-ui transition duration-charms ease-charms"
               >
                 Start free
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
                 href="https://github.com/fozagtx/Revagent"
@@ -309,7 +306,7 @@ function PainPoint({
   return (
     <Card variant="white" className="h-full lift">
       <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-50 text-red-600 [&_svg]:h-4 [&_svg]:w-4">
-        <XCircle />
+        <XCircleIcon />
       </div>
       <p className="mt-3 inline-flex items-center gap-2 text-[11px] font-mono tracking-wider uppercase text-red-600">
         <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
@@ -322,7 +319,7 @@ function PainPoint({
         {body}
       </p>
       <div className="mt-4 flex items-center gap-2 text-[12px] font-semibold text-blue-700">
-        <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+        <CheckCircleIcon className="h-4 w-4 text-success" aria-hidden="true" />
         <span className="inline-flex items-center gap-1.5">
           With RevAgent
           {icon ? (
@@ -432,7 +429,7 @@ function AgentCard({
         <p className="mt-3 text-sm leading-relaxed text-neutral-700">{desc}</p>
         <p className="mt-5 inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-blue-700 group-hover:text-blue-900 transition-colors">
           Open
-          <ArrowRight
+          <ArrowRightIcon
             className="h-3.5 w-3.5 transition-transform duration-charms ease-charms group-hover:translate-x-0.5"
             aria-hidden="true"
           />

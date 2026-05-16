@@ -43,11 +43,11 @@ export default function CallStart() {
   }
 
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
       <PageHeader
         eyebrow="Speechmatics · real-time"
         title="Discovery Co-Pilot"
-        description="Speak from your browser mic. A live JTBD switch chart populates as the conversation unfolds — Push, Pull, Anxiety, Habit — with diarized transcript and mid-call nudges if a quadrant stays empty."
+        description="Speak from your browser mic. A live JTBD switch chart populates as the conversation unfolds - Push, Pull, Anxiety, Habit - with diarized transcript and mid-call nudges if a quadrant stays empty."
         actions={
           lastCall.callId ? (
             <button

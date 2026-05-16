@@ -25,7 +25,7 @@ const mono = Space_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "RevAgent — Sales intelligence for early-stage founders",
+    default: "RevAgent - Sales intelligence for early-stage founders",
     template: "%s · RevAgent",
   },
   description:

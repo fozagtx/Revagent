@@ -133,7 +133,9 @@ body {
   color: #ffffff;
   position: relative;
   isolation: isolate;
+  text-decoration: none;
 }
+.btn-cta:hover, .btn-cta:focus, .btn-cta:visited { text-decoration: none; }
 .btn-cta::after {
   content: "";
   position: absolute;

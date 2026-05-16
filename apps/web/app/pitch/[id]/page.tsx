@@ -79,7 +79,7 @@ export default function PitchAnalysisPage() {
   const isProcessing = row.status !== "complete" && row.status !== "failed";
 
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
       <Link
         href="/pitch"
         className="inline-flex items-center gap-1 text-xs font-semibold tracking-ui text-neutral-600 hover:text-navy transition"
@@ -278,7 +278,7 @@ function ScoreCard({
   return (
     <Card
       role="group"
-      aria-label={`${label} score — analysed by ${persona}`}
+      aria-label={`${label} score - analysed by ${persona}`}
     >
       <div className="flex items-center gap-2.5 min-w-0">
         <span
@@ -313,7 +313,7 @@ function ScoreCard({
 
 function LoadingState() {
   return (
-    <div className="container-page pt-28 pb-8 md:pt-32 md:pb-12 space-y-8">
+    <div className="container-page pt-10 pb-8 md:pt-14 md:pb-12 space-y-8">
       <div className="space-y-3">
         <Skeleton className="h-3 w-32" />
         <Skeleton className="h-9 w-72" />

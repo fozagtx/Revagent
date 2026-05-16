@@ -109,16 +109,21 @@ export function SiteHeader() {
           </nav>
         )}
 
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2.5">
           {AUTH_DISABLED || !loaded ? null : me ? (
             <>
-              <span className="font-mono text-[11px] tracking-wider text-neutral-500 truncate max-w-[200px]">
-                {me.display_name || me.email}
+              <UserAvatar
+                name={me.display_name || me.email}
+                title={me.display_name || me.email}
+              />
+              <span className="font-semibold tracking-ui text-sm text-navy truncate max-w-[180px]">
+                {me.display_name || me.email.split("@")[0]}
               </span>
               <button
                 type="button"
                 onClick={signOut}
-                className="inline-flex h-10 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-5 text-sm font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
+                aria-label="Sign out"
+                className="ml-1 inline-flex h-10 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-4 text-sm font-semibold tracking-ui text-blue-700 transition-colors duration-charms ease-charms hover:bg-blue-100/40 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               >
                 Sign out
               </button>
@@ -222,4 +227,53 @@ function CloseIcon() {
       />
     </svg>
   );
+}
+
+function UserAvatar({ name, title }: { name: string; title: string }) {
+  const initials = computeInitials(name);
+  const tintIdx = hashTint(name);
+  return (
+    <span
+      aria-label={`Signed in as ${name}`}
+      title={title}
+      className={cn(
+        "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-white text-[12px] font-bold tracking-wider shadow-sm ring-2 ring-white",
+        AVATAR_TINTS[tintIdx],
+      )}
+    >
+      {initials}
+    </span>
+  );
+}
+
+// Six brand-consistent gradients. Picked deterministically by name hash so the
+// same user always gets the same color across sessions.
+const AVATAR_TINTS = [
+  "from-blue-600 to-blue-800",
+  "from-emerald-500 to-emerald-700",
+  "from-amber-500 to-amber-700",
+  "from-rose-500 to-rose-700",
+  "from-violet-500 to-violet-700",
+  "from-cyan-500 to-cyan-700",
+] as const;
+
+function computeInitials(raw: string): string {
+  // Drop the email domain if present
+  const base = raw.includes("@") ? raw.split("@")[0]! : raw;
+  // Split on spaces, dashes, dots, underscores
+  const parts = base.split(/[\s._-]+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) {
+    const word = parts[0]!;
+    // Two-letter: first + last char of the single word, both uppercase
+    return (word[0]! + (word[word.length - 1] ?? "")).toUpperCase();
+  }
+  // Multi-word: first letter of first + first letter of last
+  return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase();
+}
+
+function hashTint(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h) % AVATAR_TINTS.length;
 }
