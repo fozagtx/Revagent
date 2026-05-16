@@ -18,35 +18,67 @@ export default function Home() {
       {/* HERO */}
       <section className="hero-band">
         <div className="container-page pt-28 pb-12 sm:pt-32 sm:pb-16 md:pt-36 md:pb-20 rise-in">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-700/20 bg-white/70 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-blue-700 backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-success" /> Live · 3 AI agents
-          </span>
-          <h1 className="mt-4 font-serif text-[36px] sm:text-[48px] md:text-[64px] leading-[1.02] text-navy tracking-tight max-w-4xl break-words">
-            Win more deals.
-            <span className="block text-blue-700">Stop guessing why you lost.</span>
-          </h1>
-          <p className="mt-5 max-w-2xl text-[16px] md:text-[17px] leading-relaxed text-neutral-700">
-            RevAgent is three AI agents that fix the parts of selling that
-            kill early-stage founders: weak pitch decks, rambling discovery
-            calls, and lost deals you never debrief. Drop in a deck or a
-            transcript — get back specifics you can ship today.
-          </p>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <Link
-              href="/login?next=/pitch"
-              className="btn-cta inline-flex h-12 items-center gap-2 rounded-2xl px-6 text-[15px] font-semibold tracking-ui transition duration-charms ease-charms"
-            >
-              Start free — no card
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="inline-flex h-12 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-6 text-[15px] font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
-            >
-              See how it works
-            </Link>
+          <div className="grid gap-10 md:grid-cols-[1.2fr,1fr] md:items-center">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-700/20 bg-white/70 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-blue-700 backdrop-blur">
+                <span className="h-1.5 w-1.5 rounded-full bg-success" /> Live · 3 AI agents
+              </span>
+              <h1 className="mt-4 font-serif text-[36px] sm:text-[48px] md:text-[60px] leading-[1.02] text-navy tracking-tight max-w-3xl break-words">
+                Win more deals.
+                <span className="block text-blue-700">Stop guessing why you lost.</span>
+              </h1>
+              <p className="mt-5 max-w-xl text-[16px] md:text-[17px] leading-relaxed text-neutral-700">
+                RevAgent is three AI agents that fix the parts of selling that
+                kill early-stage founders: weak pitch decks, rambling discovery
+                calls, and lost deals you never debrief. Drop in a deck or a
+                transcript — get back specifics you can ship today.
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/login?next=/pitch"
+                  className="btn-cta inline-flex h-12 items-center gap-2 rounded-2xl px-6 text-[15px] font-semibold tracking-ui transition duration-charms ease-charms"
+                >
+                  Start free — no card
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  className="inline-flex h-12 items-center rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-6 text-[15px] font-semibold tracking-ui text-blue-700 transition duration-charms ease-charms hover:bg-blue-100/40"
+                >
+                  See how it works
+                </Link>
+              </div>
+            </div>
+
+            {/* Hero portrait — founder who closed a deal, with overlay testimonial */}
+            <div className="relative mx-auto w-full max-w-md md:max-w-none">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-blue-100 shadow-2xl ring-1 ring-[rgba(189,215,255,0.6)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=80&crop=faces"
+                  alt="Founder who closed a deal after using RevAgent"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="eager"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy via-navy/85 to-transparent p-5 sm:p-6">
+                  <p className="font-serif text-lg sm:text-xl text-white leading-snug">
+                    &ldquo;Closed our biggest deal of the year — three weeks after a pitch rewrite.&rdquo;
+                  </p>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-wider text-white/80">
+                    Maya, founder · seed-stage SaaS
+                  </p>
+                </div>
+              </div>
+              <div className="absolute -bottom-3 -left-3 hidden md:flex items-center gap-2 rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-3 py-2 shadow-lg">
+                <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
+                <span className="font-mono text-[11px] uppercase tracking-wider text-navy">
+                  +$420k ARR
+                </span>
+              </div>
+            </div>
           </div>
-          <ul className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-neutral-600">
+
+          <ul className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-neutral-600">
             <li className="inline-flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" /> 60-second analysis
             </li>
