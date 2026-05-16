@@ -15,20 +15,30 @@ let running = false;
 export async function startAuditWorker() {
   if (running) return;
   running = true;
+  console.log("[audit-worker] started · polling every", POLL_INTERVAL_MS, "ms");
   void loop();
 }
 
 async function loop() {
+  let idleTicks = 0;
   while (running) {
     try {
       const claimed = await claimNextJob();
       if (!claimed) {
+        idleTicks++;
+        // Log every 30 ticks (~60s) so we know the worker is alive even when idle.
+        if (idleTicks % 30 === 0) {
+          console.log("[audit-worker] idle ·", idleTicks, "polls with no work");
+        }
         await sleep(POLL_INTERVAL_MS);
         continue;
       }
+      idleTicks = 0;
+      console.log(`[audit-worker] picked job ${claimed.id} stage=${claimed.stage} attempt=${claimed.attempts}`);
       await processJob(claimed);
+      console.log(`[audit-worker] finished job ${claimed.id} stage=${claimed.stage}`);
     } catch (err) {
-      console.error("[audit worker loop]", err);
+      console.error("[audit-worker loop]", err);
       await sleep(POLL_INTERVAL_MS);
     }
   }
