@@ -455,7 +455,7 @@ function CallSummary({
         </ol>
       </Card>
       <details className="group">
-        <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-semibold tracking-ui text-neutral-500 hover:text-navy transition outline-none">
+        <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-md px-1 -mx-1 text-xs font-semibold tracking-ui text-neutral-500 hover:text-navy transition-colors duration-charms ease-charms outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
           <span>Technical details</span>
           <svg
             className="h-3 w-3 transition-transform duration-charms ease-charms group-open:rotate-90"
@@ -507,7 +507,9 @@ function RefRow({ label, value }: { label: string; value: string }) {
         <button
           type="button"
           onClick={copy}
-          className="shrink-0 inline-flex h-7 items-center rounded-md border border-[rgba(0,37,97,0.08)] bg-white px-2 text-[11px] font-semibold tracking-ui text-blue-700 hover:bg-blue-100/40 transition"
+          aria-label={`Copy ${label} to clipboard`}
+          aria-live="polite"
+          className="shrink-0 inline-flex h-7 items-center rounded-md border border-[rgba(0,37,97,0.08)] bg-white px-2 text-[11px] font-semibold tracking-ui text-blue-700 hover:bg-blue-100/40 transition-colors duration-charms ease-charms outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1"
         >
           {copied ? "Copied" : "Copy"}
         </button>

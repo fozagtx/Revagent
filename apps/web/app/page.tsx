@@ -70,7 +70,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="absolute -bottom-3 -left-3 hidden md:flex items-center gap-2 rounded-2xl border border-[rgba(0,37,97,0.08)] bg-white px-3 py-2 shadow-lg">
-                <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
+                <span className="h-2 w-2 rounded-full bg-success ring-2 ring-success/20" aria-hidden="true" />
                 <span className="font-mono text-[11px] uppercase tracking-wider text-navy">
                   +$420k ARR
                 </span>
@@ -78,15 +78,21 @@ export default function Home() {
             </div>
           </div>
 
-          <ul className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-neutral-600">
+          <ul
+            aria-label="Why founders pick RevAgent"
+            className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[13px] font-medium text-navy/80"
+          >
             <li className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" /> 60-second analysis
+              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+              60-second analysis
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" /> No CRM setup
+              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+              No CRM setup
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" /> Open-source · MIT
+              <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
+              Open-source · MIT
             </li>
           </ul>
         </div>

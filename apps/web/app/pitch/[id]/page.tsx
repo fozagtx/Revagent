@@ -276,29 +276,33 @@ function ScoreCard({
           ? "text-navy"
           : "text-error";
   return (
-    <Card>
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <span
-            aria-hidden="true"
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${tint} text-white text-[12px] font-bold tracking-wider shadow-sm ring-2 ring-white`}
-          >
-            {initials}
-          </span>
-          <div className="min-w-0">
-            <CardEyebrow>{label}</CardEyebrow>
-            <p className="font-mono text-[10px] uppercase tracking-wider text-navy font-bold truncate">
-              {persona}
-            </p>
-          </div>
+    <Card
+      role="group"
+      aria-label={`${label} score — analysed by ${persona}`}
+    >
+      <div className="flex items-center gap-2.5 min-w-0">
+        <span
+          aria-hidden="true"
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${tint} text-white text-[12px] font-bold tracking-wider shadow-sm ring-2 ring-white`}
+        >
+          {initials}
+        </span>
+        <div className="min-w-0">
+          <CardEyebrow>{label}</CardEyebrow>
+          <p className="font-mono text-[10px] uppercase tracking-wider text-navy font-bold truncate">
+            {persona}
+          </p>
         </div>
       </div>
       {score === null ? (
-        <Skeleton className="mt-4 h-12 w-24" />
+        <Skeleton className="mt-5 h-12 w-24" aria-label={`Awaiting ${label.toLowerCase()} score`} />
       ) : (
-        <p className={`mt-4 font-serif text-4xl sm:text-5xl tabular-nums leading-none ${tone}`}>
-          {score}
-          <span className="ml-0.5 text-xl sm:text-2xl font-semibold text-navy/70">
+        <p
+          className={`mt-5 font-serif text-5xl sm:text-[56px] tabular-nums leading-none ${tone}`}
+          aria-live="polite"
+        >
+          <span aria-label={`Score ${score} out of 10`}>{score}</span>
+          <span aria-hidden="true" className="ml-1 text-xl sm:text-2xl font-semibold text-navy/60">
             /10
           </span>
         </p>
